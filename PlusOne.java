@@ -7,21 +7,19 @@ import java.util.Scanner;
 class PlusOne{
 
       public static int[] plusOne(int[] digits){
+            
             int n =  digits.length;
-
-            int[] result = Arrays.copyOf(digits, n);  // aynı ürünleri doldurdum.
-
             for(int i = n -1; i >= 0; i--){
-                  if(result[i] < 9){
-                        result[i]++;
-                        return result;
+                  if(digits[i] < 9){
+                        digits[i]++;
+                        return digits;
                   }
 
-                  result[i] = 0;  
+                  digits[i] = 0;  
             }
-            int[] allNines = new int[n + 1];
-            allNines[0] = 1;
-            return allNines;
+            int[] result = new int[n + 1];
+            result[0] = 1;
+            return result;
       } 
 
       public static void main(String[] args) {
