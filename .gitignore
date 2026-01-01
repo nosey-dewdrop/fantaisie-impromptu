@@ -1,1 +1,14 @@
+# Java
 *.class
+*.jar
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Mac
+.DS_Store
+
+# Other
+*.log
