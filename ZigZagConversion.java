@@ -5,14 +5,8 @@ class ZigZagConversion {
       public static int findRepetition(String str, int numRows) {
 
             int period = 2*numRows - 2;
-            System.out.println("the period is: " + period);
-
             int periodCompleted = str.length()/period;
-            System.out.println("the period completed is: " + periodCompleted);
-
             int lambda = numRows-1;
-            System.out.println("the lambda is: " + lambda);
-
             int preceedingChars = str.length() % period;
             System.out.println("the preceeding chars is: " + preceedingChars);
 
@@ -24,6 +18,28 @@ class ZigZagConversion {
             }
       }
 
+      public static int findTurningCount(String str, int numRows){
+
+            int period = 2*numRows - 2;
+            int periodCompleted = str.length()/period;
+            int preceedingChars = str.length() % period;
+
+            int turningCount = 2*(periodCompleted -1) + 1;
+            
+            if(preceedingChars > 1){
+                  turningCount += 1;
+            }
+
+            return turningCount;    
+      }
+      
+      public static boolean isTurningPoint(String str, int numRows, char ch){
+
+            int period = 2 * numRows - 2;
+            int posInCycle = index % period;  
+            return (posInCycle == 0 || posInCycle == numRows - 1);
+
+      }
 
       public static void main (String[] args) {
 
@@ -42,10 +58,14 @@ class ZigZagConversion {
 
             int period = findRepetition(str, numRows);
             System.out.println("the repetition of the period is: " + period);
+            System.out.println("has turning point: " + findTurningCount(str, numRows));
 
             char[][] zigzag = new char[numRows][period];
 
-            
+            for(int i = 0; i < str.length(); i++){
+                  boolean isTurningPoint = isTurningPoint(str, numRows, str.charAt(i));
+                  System.out.println("the char " + str.charAt(i) + " is turning point: " + isTurningPoint);
+            }
             scanner.close();
       }
 
