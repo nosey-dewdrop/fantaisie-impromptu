@@ -1,0 +1,79 @@
+/* *{
+    box-sizing: border-box;
+} */
+
+head{
+    text-align: center;
+}
+
+link{
+    border-radius: 100px;
+}
+
+h1{
+    text-align: center;
+    color:rgb(0, 0, 0);
+    background-color:  #c4dcc4;
+    
+    margin: 2% 30%;
+    border-radius: 10px;
+    
+    border-bottom-style:dotted;
+    border-color: #b2c9b2;
+    border-width: 2px;
+}
+
+body{
+    height: 100vh;
+    margin-top: 90px;
+    background-image:url('fairyDance.png');
+    background-size: cover; /*bu sayede güzel bir şekilde tamamladı ve ona göre ayarlanabiliyor.*/
+
+    background-position: center;
+    background-color: #c4dcc4;
+    background-attachment: scroll;
+}
+
+.menu{
+    margin-left: 130px;
+    margin-right: 130px;
+    height: 100vh;
+}
+
+.status{    
+    background-color:  #b2c9b2;
+    float: left;
+    width: 30%;
+    margin-left: 2%;
+    /*pixel ile değil de yüzde ile yaptığımda ona göre esniyorlar.*/
+    /* margin: 30%; */
+
+    border-radius: 10px;
+
+    text-align: center;
+    font-weight: bold;
+
+    /* border-style:dotted;
+    border-color: #34545c;
+    border-width: 2px; */
+    /*genişliğini ve rengini görebilmen için öncelikle kenarlığın stilinin ne olduğunu yazman gerekir.*/
+}
+
+.status a{
+    text-align: left; /*özellikle eğer ayarlamazsan status içindeki a'lar da status ayarından olacaktır.*/
+    display: block;
+    background-color:  #c4dcc4;
+
+    font-size: 15px;
+    font-weight: lighter;
+
+    margin: 3.1px;
+    padding-left: 10px;
+
+    border-style:dotted;
+    border-width: 1px;
+    border-color:#a1baa1;
+    border-radius: 4px;
+    
+    /*space around elements*/
+}
