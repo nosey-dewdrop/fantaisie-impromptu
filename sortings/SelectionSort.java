@@ -1,3 +1,4 @@
+package sortings;
 import java.util.Arrays;
 
 public class SelectionSort {

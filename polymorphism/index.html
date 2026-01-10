@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface & Abstract Class</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1c1c1c;
+            color: #d4d4d4;
+            line-height: 1.6;
+        }
+        .header {
+            background: #252525;
+            border-bottom: 1px solid #3a3a3a;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: bold; color: #52a8ff; }
+        .stats { display: flex; gap: 25px; font-size: 14px; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #52a8ff; }
+        .stat-label { font-size: 11px; color: #888; text-transform: uppercase; }
+        .main { padding: 30px 0; }
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .topic-card {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .topic-card:hover { border-color: #52a8ff; transform: translateY(-2px); }
+        .topic-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 10px; }
+        .topic-progress { font-size: 13px; color: #888; margin-bottom: 10px; }
+        .progress-bar { height: 4px; background: #3a3a3a; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #52a8ff; transition: width 0.3s; }
+        
+        .problem-section { display: none; }
+        .problem-section.active { display: block; }
+        
+        .problem-header {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .problem-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .problem-title { font-size: 20px; font-weight: 600; color: #fff; }
+        .difficulty { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .difficulty-easy { background: #1b5e20; color: #4caf50; }
+        .difficulty-medium { background: #e65100; color: #ff9800; }
+        .difficulty-hard { background: #b71c1c; color: #f44336; }
+        
+        .problem-description {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        .problem-description h3 { color: #52a8ff; margin-top: 20px; margin-bottom: 10px; font-size: 16px; }
+        .problem-description pre {
+            background: #1c1c1c;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #d4d4d4;
+            margin: 10px 0;
+        }
+        .problem-description ul { margin-left: 20px; margin-top: 10px; }
+        .problem-description li { margin: 8px 0; }
+        .problem-description strong { color: #52a8ff; }
+        
+        .code-section {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .code-section h3 { color: #52a8ff; margin-bottom: 15px; font-size: 16px; }
+        
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            background: #1c1c1c;
+            color: #d4d4d4;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        textarea:focus { outline: none; border-color: #52a8ff; }
+        
+        .actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #52a8ff; color: #fff; }
+        .btn-primary:hover { background: #3d8fdb; }
+        .btn-secondary { background: #3a3a3a; color: #d4d4d4; }
+        .btn-secondary:hover { background: #4a4a4a; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .hints-section {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .hints-section.visible { display: block; }
+        .hint {
+            background: #1c1c1c;
+            border-left: 3px solid #52a8ff;
+            padding: 12px 15px;
+            margin: 10px 0;
+            display: none;
+        }
+        .hint.visible { display: block; }
+        
+        .feedback {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        .feedback.visible { display: block; }
+        .feedback.success { border-color: #4caf50; }
+        .feedback.error { border-color: #f44336; }
+        .feedback-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+        .feedback.success .feedback-title { color: #4caf50; }
+        .feedback.error .feedback-title { color: #f44336; }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #52a8ff;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        
+        @media (max-width: 768px) {
+            .topics-grid { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; gap: 15px; }
+            .problem-nav { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Interface & Abstract Class</div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-solved">0</div>
+                        <div class="stat-label">Çözülen</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">20</div>
+                        <div class="stat-label">Toplam</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="container">
+            <!-- Topics Grid -->
+            <div id="topics-view">
+                <div class="topics-grid">
+                    <div class="topic-card" onclick="showTopic('interface')">
+                        <div class="topic-title">Interfaces</div>
+                        <div class="topic-progress">
+                            <span id="interface-progress">0/10</span> tamamlandı
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="interface-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" onclick="showTopic('abstract')">
+                        <div class="topic-title">Abstract Classes</div>
+                        <div class="topic-progress">
+                            <span id="abstract-progress">0/10</span> tamamlandı
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="abstract-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem View -->
+            <div id="problem-view" class="problem-section">
+                <a href="#" class="back-btn" onclick="showTopics(); return false;">
+                    ← Konulara Dön
+                </a>
+
+                <div class="problem-header">
+                    <div class="problem-nav">
+                        <div>
+                            <div class="problem-title" id="problem-title"></div>
+                            <div style="margin-top: 5px;">
+                                <span class="difficulty" id="problem-difficulty"></span>
+                                <span style="margin-left: 15px; font-size: 13px; color: #888;" id="problem-number"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn-secondary" onclick="previousProblem()">← Önceki</button>
+                            <button class="btn-secondary" onclick="nextProblem()">Sonraki →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="problem-description" id="problem-description"></div>
+
+                <div class="hints-section" id="hints-section">
+                    <h3 style="color: #52a8ff; margin-bottom: 15px;">💡 İpuçları</h3>
+                    <div id="hints-container"></div>
+                    <button class="btn-secondary" onclick="showNextHint()" id="next-hint-btn" style="margin-top: 10px;">
+                        Sonraki İpucu
+                    </button>
+                </div>
+
+                <div class="code-section">
+                    <h3>💻 Kodunu Yaz</h3>
+                    <textarea id="code-editor" placeholder="// Java kodunu buraya yaz..."></textarea>
+                    <div class="actions">
+                        <button class="btn-primary" onclick="checkSolution()">Kontrol Et</button>
+                        <button class="btn-secondary" onclick="showHints()">İpucu</button>
+                        <button class="btn-secondary" onclick="showSolution()">Çözümü Göster</button>
+                        <button class="btn-secondary" onclick="clearCode()">Temizle</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const problems = {
+            interface: [
+                {
+                    title: "Interface Nedir?",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Interface Kavramı</h3>
+                        <p><strong>Interface</strong>, sınıfların uyması gereken bir "contract" (sözleşme) tanımlar. Sadece <strong>ne yapılacağını</strong> söyler, <strong>nasıl yapılacağını</strong> söylemez.</p>
+                        
+                        <h3>🎯 Neden Interface?</h3>
+                        <ul>
+                            <li>Farklı sınıflar aynı davranışı garanti eder</li>
+                            <li>Multiple inheritance problemi çözer (Java'da bir sınıf sadece 1 sınıftan extends yapar ama birden fazla interface implement edebilir)</li>
+                            <li>Loose coupling sağlar (esnek kod)</li>
+                        </ul>
+
+                        <h3>💡 Gerçek Hayat Örneği</h3>
+                        <p>USB interface'i düşün: USB'ye fare, klavye, flash disk takabilirsin. Hepsi farklı ama hepsi USB kurallarına uyar.</p>
+
+                        <h3>💻 Java'da Interface</h3>
+                        <pre>interface Drawable {
+    void draw();  // Sadece signature, body yok!
+}
+
+class Circle implements Drawable {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a circle");
+    }
+}
+
+class Square implements Drawable {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a square");
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Playable interface'i oluştur. play() metodu olsun. Music ve Video sınıfları bu interface'i implement etsin.</p>
+                    `,
+                    starterCode: `// TODO: Playable interface tanımla (play metodu)
+// TODO: Music sınıfı - Playable implement et
+// TODO: Video sınıfı - Playable implement et`,
+                    solution: `interface Playable {
+    void play();
+}
+
+class Music implements Playable {
+    @Override
+    public void play() {
+        System.out.println("Playing music");
+    }
+}
+
+class Video implements Playable {
+    @Override
+    public void play() {
+        System.out.println("Playing video");
+    }
+}`,
+                    hints: [
+                        "interface anahtar kelimesi kullan",
+                        "Metod body'si yok, sadece signature",
+                        "implements anahtar kelimesi ile interface'i uygula",
+                        "@Override annotation ekle"
+                    ],
+                    requiredKeywords: ["interface Playable", "implements", "play"],
+                    successMessage: "Harika! İlk interface'ini yazdın. Interface'in ne olduğunu anladın."
+                },
+                {
+                    title: "Interface ile Polymorphism",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Interface ve Polymorphism</h3>
+                        <p>Interface type'ı kullanarak farklı sınıfları aynı şekilde kullanabilirsin!</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>Playable p1 = new Music();
+Playable p2 = new Video();
+
+p1.play();  // "Playing music"
+p2.play();  // "Playing video"
+
+// Array ile:
+Playable[] items = {new Music(), new Video()};
+for (Playable item : items) {
+    item.play();  // Polymorphism!
+}</pre>
+
+                        <h3>🎯 Neden Önemli?</h3>
+                        <p>Interface reference kullanarak, implementation detaylarından bağımsız kod yazarsın. Music mı Video mu umrunda değil, ikisi de play() yapabiliyor!</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Printable interface yap (print metodu). Book ve Document sınıfları implement etsin. main() metodunda Printable array kullanarak hepsini print et.</p>
+                    `,
+                    starterCode: `// TODO: Printable interface
+// TODO: Book sınıfı - implements Printable
+// TODO: Document sınıfı - implements Printable
+// TODO: main() metodunda polymorphism göster`,
+                    solution: `interface Printable {
+    void print();
+}
+
+class Book implements Printable {
+    @Override
+    public void print() {
+        System.out.println("Printing book");
+    }
+}
+
+class Document implements Printable {
+    @Override
+    public void print() {
+        System.out.println("Printing document");
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        Printable[] items = {new Book(), new Document()};
+        for (Printable item : items) {
+            item.print();
+        }
+    }
+}`,
+                    hints: [
+                        "Interface reference kullan: Printable[]",
+                        "Array içinde farklı tipler olabilir",
+                        "for-each loop ile dolaş",
+                        "Her item.print() çağrılabilir"
+                    ],
+                    requiredKeywords: ["interface Printable", "implements", "Printable[]", "main"],
+                    successMessage: "Mükemmel! Interface ile polymorphism kullandın."
+                },
+                {
+                    title: "Multiple Interfaces",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Multiple Interface Implementation</h3>
+                        <p>Java'da bir sınıf sadece 1 sınıftan extends yapabilir ama <strong>birden fazla interface implement edebilir!</strong></p>
+
+                        <h3>💡 Syntax</h3>
+                        <pre>class SmartPhone implements Callable, Photographable, Playable {
+    // Üç interface'in de metodlarını implement et
+}</pre>
+
+                        <h3>🎯 Neden Çoklu Interface?</h3>
+                        <ul>
+                            <li>Bir sınıf birden fazla davranış sergileyebilir</li>
+                            <li>Diamond problem'i çözer</li>
+                            <li>Daha esnek tasarım</li>
+                        </ul>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>interface Flyable {
+    void fly();
+}
+
+interface Swimmable {
+    void swim();
+}
+
+class Duck implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("Duck flying");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("Duck swimming");
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Readable ve Writable interface'leri yap. File sınıfı her ikisini de implement etsin.</p>
+                    `,
+                    starterCode: `// TODO: Readable interface (read() metodu)
+// TODO: Writable interface (write() metodu)
+// TODO: File sınıfı - her ikisini de implement et`,
+                    solution: `interface Readable {
+    void read();
+}
+
+interface Writable {
+    void write();
+}
+
+class File implements Readable, Writable {
+    @Override
+    public void read() {
+        System.out.println("Reading file");
+    }
+    
+    @Override
+    public void write() {
+        System.out.println("Writing to file");
+    }
+}`,
+                    hints: [
+                        "İki ayrı interface tanımla",
+                        "virgül ile ayır: implements Readable, Writable",
+                        "Her interface'in metodunu implement et",
+                        "Sıra önemli değil"
+                    ],
+                    requiredKeywords: ["interface Readable", "interface Writable", "implements Readable, Writable"],
+                    successMessage: "Süper! Multiple interface implementation öğrendin."
+                },
+                {
+                    title: "Interface'de Default Methods",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Default Methods (Java 8+)</h3>
+                        <p>Java 8'den itibaren interface'lerde <strong>default</strong> keyword ile body'si olan metodlar yazabilirsin!</p>
+
+                        <h3>🎯 Neden Default Method?</h3>
+                        <ul>
+                            <li>Interface'e yeni metod eklerken mevcut implementasyonları bozmamak için</li>
+                            <li>Ortak davranış paylaşmak için</li>
+                            <li>Backward compatibility</li>
+                        </ul>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>interface Logger {
+    void log(String message);  // Abstract
+    
+    default void logError(String error) {  // Default
+        log("ERROR: " + error);
+    }
+    
+    default void logInfo(String info) {
+        log("INFO: " + info);
+    }
+}
+
+class ConsoleLogger implements Logger {
+    @Override
+    public void log(String message) {
+        System.out.println(message);
+    }
+    // logError ve logInfo otomatik geliyor!
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Calculator interface yap. add(int, int) abstract metod olsun. multiply(int, int) default metod olsun (add kullanarak çarpma yap).</p>
+                    `,
+                    starterCode: `// TODO: Calculator interface
+// abstract int add(int a, int b)
+// default int multiply(int a, int b) - add kullanarak yap
+// TODO: SimpleCalculator sınıfı - sadece add implement et`,
+                    solution: `interface Calculator {
+    int add(int a, int b);
+    
+    default int multiply(int a, int b) {
+        int result = 0;
+        for (int i = 0; i < b; i++) {
+            result = add(result, a);
+        }
+        return result;
+    }
+}
+
+class SimpleCalculator implements Calculator {
+    @Override
+    public int add(int a, int b) {
+        return a + b;
+    }
+}`,
+                    hints: [
+                        "default keyword kullan",
+                        "Default metodun body'si olur",
+                        "add metodunu kullanarak multiply yap",
+                        "Loop ile a'yı b kere topla"
+                    ],
+                    requiredKeywords: ["interface Calculator", "default", "multiply"],
+                    successMessage: "Harika! Default method kullanımını öğrendin."
+                },
+                {
+                    title: "Interface'de Static Methods",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Static Methods in Interface</h3>
+                        <p>Java 8'den itibaren interface'lerde static metodlar da yazabilirsin!</p>
+
+                        <h3>💡 Farkı</h3>
+                        <ul>
+                            <li>Static metodlar override edilemez</li>
+                            <li>Interface adıyla çağrılır: InterfaceName.method()</li>
+                            <li>Utility metodlar için kullanılır</li>
+                        </ul>
+
+                        <h3>💻 Örnek</h3>
+                        <pre>interface MathUtils {
+    int square(int n);
+    
+    static int cube(int n) {
+        return n * n * n;
+    }
+    
+    static boolean isPrime(int n) {
+        if (n < 2) return false;
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) return false;
+        }
+        return true;
+    }
+}
+
+// Kullanım:
+int result = MathUtils.cube(3);  // 27
+boolean prime = MathUtils.isPrime(7);  // true</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>StringUtils interface yap. reverse(String) static metodu olsun. isEmpty(String) static metodu olsun.</p>
+                    `,
+                    starterCode: `// TODO: StringUtils interface
+// static String reverse(String s)
+// static boolean isEmpty(String s)`,
+                    solution: `interface StringUtils {
+    static String reverse(String s) {
+        return new StringBuilder(s).reverse().toString();
+    }
+    
+    static boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+}`,
+                    hints: [
+                        "static keyword kullan",
+                        "StringBuilder.reverse() kullan",
+                        "isEmpty: null veya boş check",
+                        "Static metodlar override edilemez"
+                    ],
+                    requiredKeywords: ["interface StringUtils", "static", "reverse", "isEmpty"],
+                    successMessage: "Mükemmel! Static method kullanımını öğrendin."
+                },
+                {
+                    title: "Interface Inheritance",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Interface'ler Birbirini Extend Edebilir</h3>
+                        <p>Interface'ler başka interface'leri <strong>extends</strong> edebilir (implements değil!).</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>interface Animal {
+    void eat();
+}
+
+interface Mammal extends Animal {
+    void giveBirth();
+}
+
+interface Pet extends Animal {
+    void play();
+}
+
+class Dog implements Mammal, Pet {
+    @Override
+    public void eat() {
+        System.out.println("Dog eating");
+    }
+    
+    @Override
+    public void giveBirth() {
+        System.out.println("Giving birth to puppies");
+    }
+    
+    @Override
+    public void play() {
+        System.out.println("Dog playing");
+    }
+}</pre>
+
+                        <h3>🎯 Faydası</h3>
+                        <p>Interface'leri hiyerarşik organize edebilirsin. Dog hem Mammal hem Pet, dolayısıyla 3 metodun hepsini implement etmeli.</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Vehicle interface (move() metodu). ElectricVehicle extends Vehicle (charge() ekle). Car implements ElectricVehicle.</p>
+                    `,
+                    starterCode: `// TODO: Vehicle interface - move()
+// TODO: ElectricVehicle extends Vehicle - charge() ekle
+// TODO: Car implements ElectricVehicle`,
+                    solution: `interface Vehicle {
+    void move();
+}
+
+interface ElectricVehicle extends Vehicle {
+    void charge();
+}
+
+class Car implements ElectricVehicle {
+    @Override
+    public void move() {
+        System.out.println("Car moving");
+    }
+    
+    @Override
+    public void charge() {
+        System.out.println("Charging car");
+    }
+}`,
+                    hints: [
+                        "Interface'ler extends kullanır",
+                        "ElectricVehicle hem move hem charge'a sahip",
+                        "Car her ikisini de implement etmeli",
+                        "Hiyerarşi: Vehicle → ElectricVehicle → Car"
+                    ],
+                    requiredKeywords: ["interface Vehicle", "extends Vehicle", "implements ElectricVehicle"],
+                    successMessage: "Süper! Interface inheritance öğrendin."
+                },
+                {
+                    title: "Marker Interface",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Marker Interface</h3>
+                        <p><strong>Marker Interface</strong>, hiç metodu olmayan bir interface'dir. Sadece sınıfı "işaretlemek" için kullanılır.</p>
+
+                        <h3>💡 Java'daki Örnekler</h3>
+                        <ul>
+                            <li><strong>Serializable:</strong> Bu sınıf serialize edilebilir</li>
+                            <li><strong>Cloneable:</strong> Bu sınıf clone edilebilir</li>
+                            <li><strong>Remote:</strong> Bu sınıf remote çağrılabilir</li>
+                        </ul>
+
+                        <h3>💻 Örnek</h3>
+                        <pre>interface Deletable {
+    // Hiç metod yok!
+}
+
+class TempFile implements Deletable {
+    private String name;
+    
+    public TempFile(String name) {
+        this.name = name;
+    }
+}
+
+class FileManager {
+    public void delete(Object obj) {
+        if (obj instanceof Deletable) {
+            System.out.println("Deleting...");
+        } else {
+            System.out.println("Cannot delete!");
+        }
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Testable marker interface yap. TestClass bunu implement etsin. TestRunner sınıfı instanceof ile kontrol etsin.</p>
+                    `,
+                    starterCode: `// TODO: Testable interface (boş)
+// TODO: TestClass implements Testable
+// TODO: TestRunner - runTest(Object obj) metodu, instanceof kontrolü`,
+                    solution: `interface Testable {
+    // Marker interface - boş!
+}
+
+class TestClass implements Testable {
+    public void test() {
+        System.out.println("Running test");
+    }
+}
+
+class TestRunner {
+    public void runTest(Object obj) {
+        if (obj instanceof Testable) {
+            System.out.println("Object is testable, running tests...");
+        } else {
+            System.out.println("Object is not testable");
+        }
+    }
+}`,
+                    hints: [
+                        "Interface'de hiçbir metod olmasın",
+                        "instanceof ile tip kontrolü yap",
+                        "Marker sadece sınıfı işaretler",
+                        "Çalışma zamanında kontrol edilir"
+                    ],
+                    requiredKeywords: ["interface Testable", "implements Testable", "instanceof"],
+                    successMessage: "Harika! Marker interface konseptini anladın."
+                },
+                {
+                    title: "Functional Interface",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>📚 Functional Interface</h3>
+                        <p><strong>Functional Interface</strong>, tam olarak 1 abstract metodu olan interface'dir. Lambda expressions ile kullanılır.</p>
+
+                        <h3>💡 @FunctionalInterface</h3>
+                        <pre>@FunctionalInterface
+interface Converter {
+    int convert(String s);  // Sadece 1 abstract metod!
+    
+    // Default ve static metodlar olabilir
+    default void log() {
+        System.out.println("Converting...");
+    }
+}</pre>
+
+                        <h3>💻 Lambda ile Kullanım</h3>
+                        <pre>Converter c = (s) -> Integer.parseInt(s);
+int result = c.convert("42");  // 42
+
+// Veya method reference:
+Converter c2 = Integer::parseInt;</pre>
+
+                        <h3>🎯 Java'nın Built-in Functional Interfaces</h3>
+                        <ul>
+                            <li>Predicate&lt;T&gt; - test(T t) → boolean</li>
+                            <li>Function&lt;T, R&gt; - apply(T t) → R</li>
+                            <li>Consumer&lt;T&gt; - accept(T t) → void</li>
+                            <li>Supplier&lt;T&gt; - get() → T</li>
+                        </ul>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Validator functional interface yap. validate(String) metodu boolean dönsün. @FunctionalInterface annotation kullan.</p>
+                    `,
+                    starterCode: `// TODO: @FunctionalInterface Validator
+// boolean validate(String s)
+// TODO: main() metodunda lambda ile kullan`,
+                    solution: `@FunctionalInterface
+interface Validator {
+    boolean validate(String s);
+}
+
+class Test {
+    public static void main(String[] args) {
+        Validator emailValidator = (s) -> s.contains("@");
+        Validator lengthValidator = (s) -> s.length() >= 8;
+        
+        System.out.println(emailValidator.validate("test@example.com"));  // true
+        System.out.println(lengthValidator.validate("short"));  // false
+    }
+}`,
+                    hints: [
+                        "@FunctionalInterface annotation kullan",
+                        "Sadece 1 abstract metod olmalı",
+                        "Lambda: (parametre) -> expression",
+                        "main() metodunda kullan"
+                    ],
+                    requiredKeywords: ["@FunctionalInterface", "Validator", "validate", "->"],
+                    successMessage: "Mükemmel! Functional interface ve lambda öğrendin."
+                },
+                {
+                    title: "Interface vs Abstract Class",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>📚 Interface vs Abstract Class</h3>
+                        <p>Her ikisi de "sözleşme" tanımlar ama farkları var:</p>
+
+                        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                            <tr style="background: #1c1c1c;">
+                                <th style="padding: 10px; border: 1px solid #3a3a3a;">Özellik</th>
+                                <th style="padding: 10px; border: 1px solid #3a3a3a;">Interface</th>
+                                <th style="padding: 10px; border: 1px solid #3a3a3a;">Abstract Class</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Çoklu miras</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">✓ Birden fazla</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">✗ Sadece 1</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Constructor</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">✗ Olamaz</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">✓ Olabilir</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Fields</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">public static final</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Her türlü</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Metodlar</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">abstract + default + static</td>
+                                <td style="padding: 10px; border: 1px solid #3a3a3a;">Her türlü</td>
+                            </tr>
+                        </table>
+
+                        <h3>🎯 Ne Zaman Interface?</h3>
+                        <ul>
+                            <li>"can do" ilişkisi (Flyable, Swimmable)</li>
+                            <li>Alakasız sınıflar aynı davranışı paylaşacak</li>
+                            <li>Multiple inheritance gerekli</li>
+                        </ul>
+
+                        <h3>🎯 Ne Zaman Abstract Class?</h3>
+                        <ul>
+                            <li>"is a" ilişkisi (Dog is an Animal)</li>
+                            <li>Ortak state (fields) paylaşılacak</li>
+                            <li>Constructor gerekli</li>
+                        </ul>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Payment abstract class yap (amount field, constructor). Refundable interface yap (refund() metodu). CreditCardPayment her ikisini de kullansın.</p>
+                    `,
+                    starterCode: `// TODO: Payment abstract class - amount field ve getAmount()
+// TODO: Refundable interface - refund() metodu
+// TODO: CreditCardPayment extends Payment implements Refundable`,
+                    solution: `abstract class Payment {
+    protected double amount;
+    
+    public Payment(double amount) {
+        this.amount = amount;
+    }
+    
+    public double getAmount() {
+        return amount;
+    }
+}
+
+interface Refundable {
+    void refund();
+}
+
+class CreditCardPayment extends Payment implements Refundable {
+    public CreditCardPayment(double amount) {
+        super(amount);
+    }
+    
+    @Override
+    public void refund() {
+        System.out.println("Refunding $" + amount);
+    }
+}`,
+                    hints: [
+                        "Abstract class state tutabilir (fields)",
+                        "Interface davranış tanımlar",
+                        "extends ve implements birlikte kullan",
+                        "Constructor super() çağırmalı"
+                    ],
+                    requiredKeywords: ["abstract class Payment", "interface Refundable", "extends Payment implements Refundable"],
+                    successMessage: "Mükemmel! Interface ve Abstract Class farkını öğrendin."
+                },
+                {
+                    title: "Interface Challenge",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>🎯 Kapsamlı Proje: Plugin Sistemi</h3>
+                        <p>Bir plugin sistemi tasarla:</p>
+
+                        <h3>📋 Gereksinimler</h3>
+                        <ul>
+                            <li><strong>Plugin</strong> interface: getName(), execute() metodları</li>
+                            <li><strong>Configurable</strong> interface: setConfig(String config)</li>
+                            <li><strong>LoggingPlugin</strong>: Her ikisini de implement et</li>
+                            <li><strong>PluginManager</strong>: Plugin'leri yönet, çalıştır</li>
+                        </ul>
+
+                        <h3>💡 Örnek Çıktı</h3>
+                        <pre>Executing: Logging Plugin
+Config set: verbose=true
+Logging: User logged in</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Yukarıdaki sistemi kodla. main() metodunda PluginManager kullanarak plugin çalıştır.</p>
+                    `,
+                    starterCode: `// TODO: Plugin interface
+// TODO: Configurable interface
+// TODO: LoggingPlugin - her ikisini implement et
+// TODO: PluginManager - plugin'leri yönet
+// TODO: main() - test et`,
+                    solution: `interface Plugin {
+    String getName();
+    void execute();
+}
+
+interface Configurable {
+    void setConfig(String config);
+}
+
+class LoggingPlugin implements Plugin, Configurable {
+    private String config;
+    
+    @Override
+    public String getName() {
+        return "Logging Plugin";
+    }
+    
+    @Override
+    public void execute() {
+        System.out.println("Logging: User logged in");
+    }
+    
+    @Override
+    public void setConfig(String config) {
+        this.config = config;
+        System.out.println("Config set: " + config);
+    }
+}
+
+class PluginManager {
+    public void runPlugin(Plugin plugin) {
+        System.out.println("Executing: " + plugin.getName());
+        
+        if (plugin instanceof Configurable) {
+            ((Configurable) plugin).setConfig("verbose=true");
+        }
+        
+        plugin.execute();
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        PluginManager manager = new PluginManager();
+        Plugin plugin = new LoggingPlugin();
+        manager.runPlugin(plugin);
+    }
+}`,
+                    hints: [
+                        "İki interface tanımla",
+                        "LoggingPlugin her ikisini implement et",
+                        "PluginManager instanceof kontrolü yap",
+                        "Casting ile Configurable'a çevir"
+                    ],
+                    requiredKeywords: ["interface Plugin", "interface Configurable", "implements Plugin, Configurable", "instanceof", "main"],
+                    successMessage: "🎉 TEBRİKLER! Interface konusunu tamamen öğrendin! Abstract Class konusuna geçebilirsin."
+                }
+            ],
+            
+            abstract: [
+                {
+                    title: "Abstract Class Nedir?",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Abstract Class Kavramı</h3>
+                        <p><strong>Abstract class</strong>, kendisinden nesne oluşturulamayan ama miras alınabilen sınıftır. Hem abstract hem concrete metodlar içerebilir.</p>
+                        
+                        <h3>🎯 Neden Abstract Class?</h3>
+                        <ul>
+                            <li>Ortak davranış ve state paylaşımı</li>
+                            <li>Alt sınıflar için temel şablon</li>
+                            <li>Bazı metodları zorunlu kılma (abstract methods)</li>
+                            <li>Partial implementation sağlama</li>
+                        </ul>
+
+                        <h3>💡 Interface'den Farkı</h3>
+                        <ul>
+                            <li>Constructor olabilir</li>
+                            <li>Instance variables olabilir</li>
+                            <li>Concrete metodlar olabilir</li>
+                            <li>Sadece 1 class'tan extends yapılır</li>
+                        </ul>
+
+                        <h3>💻 Örnek</h3>
+                        <pre>abstract class Animal {
+    String name;  // Instance variable
+    
+    public Animal(String name) {  // Constructor
+        this.name = name;
+    }
+    
+    public void sleep() {  // Concrete method
+        System.out.println(name + " is sleeping");
+    }
+    
+    public abstract void makeSound();  // Abstract method
+}
+
+class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+    
+    @Override
+    public void makeSound() {
+        System.out.println("Woof!");
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Shape abstract class yaz (color field, getColor() concrete method). draw() abstract method. Circle extends Shape.</p>
+                    `,
+                    starterCode: `// TODO: abstract class Shape
+// String color field ve constructor
+// String getColor() concrete method
+// abstract void draw()
+// TODO: Circle extends Shape`,
+                    solution: `abstract class Shape {
+    protected String color;
+    
+    public Shape(String color) {
+        this.color = color;
+    }
+    
+    public String getColor() {
+        return color;
+    }
+    
+    public abstract void draw();
+}
+
+class Circle extends Shape {
+    public Circle(String color) {
+        super(color);
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("Drawing a " + color + " circle");
+    }
+}`,
+                    hints: [
+                        "abstract class anahtar kelimesi",
+                        "Constructor ekle",
+                        "protected field kullan",
+                        "abstract method body'siz"
+                    ],
+                    requiredKeywords: ["abstract class Shape", "abstract void draw", "extends Shape"],
+                    successMessage: "Harika! İlk abstract class'ını yazdın."
+                },
+                {
+                    title: "Abstract Methods",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Abstract Methods</h3>
+                        <p><strong>Abstract method</strong>, sadece signature'ı olan, implementation'ı olmayan metoddur. Alt sınıflar bunu implement etmek zorunda!</p>
+
+                        <h3>🎯 Kurallar</h3>
+                        <ul>
+                            <li>Body'si yok, sadece signature</li>
+                            <li>abstract class içinde olmalı</li>
+                            <li>Alt sınıf implement etmeli (veya o da abstract olmalı)</li>
+                            <li>private olamaz</li>
+                            <li>static olamaz</li>
+                        </ul>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class Vehicle {
+    public abstract void start();
+    public abstract void stop();
+    
+    public void refuel() {  // Concrete
+        System.out.println("Refueling...");
+    }
+}
+
+class Car extends Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car starting");
+    }
+    
+    @Override
+    public void stop() {
+        System.out.println("Car stopping");
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Employee abstract class: abstract double calculateSalary(). concrete void displayInfo(). Manager ve Developer extends etsin.</p>
+                    `,
+                    starterCode: `// TODO: abstract Employee
+// abstract double calculateSalary()
+// void displayInfo() - concrete
+// TODO: Manager extends Employee
+// TODO: Developer extends Employee`,
+                    solution: `abstract class Employee {
+    protected String name;
+    
+    public Employee(String name) {
+        this.name = name;
+    }
+    
+    public abstract double calculateSalary();
+    
+    public void displayInfo() {
+        System.out.println("Employee: " + name);
+        System.out.println("Salary: $" + calculateSalary());
+    }
+}
+
+class Manager extends Employee {
+    private double baseSalary;
+    
+    public Manager(String name, double baseSalary) {
+        super(name);
+        this.baseSalary = baseSalary;
+    }
+    
+    @Override
+    public double calculateSalary() {
+        return baseSalary * 1.5;  // 50% bonus
+    }
+}
+
+class Developer extends Employee {
+    private double hourlyRate;
+    private int hoursWorked;
+    
+    public Developer(String name, double hourlyRate, int hoursWorked) {
+        super(name);
+        this.hourlyRate = hourlyRate;
+        this.hoursWorked = hoursWorked;
+    }
+    
+    @Override
+    public double calculateSalary() {
+        return hourlyRate * hoursWorked;
+    }
+}`,
+                    hints: [
+                        "abstract method body'siz",
+                        "Alt sınıflar override etmeli",
+                        "Farklı hesaplama yapabilirler",
+                        "super(name) çağır"
+                    ],
+                    requiredKeywords: ["abstract class Employee", "abstract double calculateSalary", "extends Employee"],
+                    successMessage: "Mükemmel! Abstract method kullanımını öğrendin."
+                },
+                {
+                    title: "Constructor in Abstract Class",
+                    difficulty: "Easy",
+                    description: `
+                        <h3>📚 Abstract Class'ta Constructor</h3>
+                        <p>Abstract class'ın constructor'ı olabilir! Nesne oluşturamazsın ama alt sınıflar super() ile çağırır.</p>
+
+                        <h3>🎯 Neden Constructor?</h3>
+                        <ul>
+                            <li>Ortak field'ları initialize etmek için</li>
+                            <li>Alt sınıflar için gerekli başlangıç</li>
+                            <li>Kod tekrarını önler</li>
+                        </ul>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class Game {
+    protected String title;
+    protected int players;
+    
+    public Game(String title, int players) {
+        this.title = title;
+        this.players = players;
+        System.out.println("Game initialized: " + title);
+    }
+    
+    public abstract void play();
+}
+
+class Chess extends Game {
+    public Chess() {
+        super("Chess", 2);  // Constructor çağrısı zorunlu!
+    }
+    
+    @Override
+    public void play() {
+        System.out.println("Playing chess with " + players + " players");
+    }
+}</pre>
+
+                        <h3>❌ Hata</h3>
+                        <pre>Game g = new Game("Test", 2);  // ERROR!
+// Abstract class'tan nesne oluşturamazsın</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>BankAccount abstract class: accountNumber ve balance field'ları, constructor, abstract withdraw() ve deposit().</p>
+                    `,
+                    starterCode: `// TODO: abstract BankAccount
+// String accountNumber, double balance
+// Constructor her ikisini alsın
+// abstract void withdraw(double amount)
+// abstract void deposit(double amount)
+// TODO: SavingsAccount extends BankAccount`,
+                    solution: `abstract class BankAccount {
+    protected String accountNumber;
+    protected double balance;
+    
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public abstract void withdraw(double amount);
+    public abstract void deposit(double amount);
+}
+
+class SavingsAccount extends BankAccount {
+    public SavingsAccount(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+    
+    @Override
+    public void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            System.out.println("Withdrawn: $" + amount);
+        }
+    }
+    
+    @Override
+    public void deposit(double amount) {
+        balance += amount;
+        System.out.println("Deposited: $" + amount);
+    }
+}`,
+                    hints: [
+                        "Constructor protected field'ları initialize eder",
+                        "Alt sınıf super() çağırmalı",
+                        "balance protected olduğu için erişilebilir",
+                        "İki abstract method implement et"
+                    ],
+                    requiredKeywords: ["abstract class BankAccount", "public BankAccount", "abstract void withdraw", "super("],
+                    successMessage: "Süper! Abstract class constructor kullanımını öğrendin."
+                },
+                {
+                    title: "Template Method Pattern",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Template Method Pattern</h3>
+                        <p>Abstract class'ın en güçlü kullanımı! Algoritmanın iskeletini tanımla, detayları alt sınıflara bırak.</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class DataProcessor {
+    // Template method - final olabilir
+    public final void process() {
+        readData();
+        processData();
+        writeData();
+    }
+    
+    protected abstract void readData();
+    protected abstract void processData();
+    
+    protected void writeData() {  // Hook - override opsiyonel
+        System.out.println("Writing data...");
+    }
+}
+
+class CSVProcessor extends DataProcessor {
+    @Override
+    protected void readData() {
+        System.out.println("Reading CSV");
+    }
+    
+    @Override
+    protected void processData() {
+        System.out.println("Processing CSV data");
+    }
+}</pre>
+
+                        <h3>🎯 Faydası</h3>
+                        <p>İş akışı değişmez, sadece adımlar değişir. Code reuse maksimum!</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Beverage abstract class: final prepare() metodu (boilWater, brew, pour, addCondiments). brew() ve addCondiments() abstract.</p>
+                    `,
+                    starterCode: `// TODO: abstract Beverage
+// final void prepare() - template method
+// void boilWater() - concrete
+// abstract void brew()
+// void pour() - concrete
+// abstract void addCondiments()
+// TODO: Tea extends Beverage
+// TODO: Coffee extends Beverage`,
+                    solution: `abstract class Beverage {
+    public final void prepare() {
+        boilWater();
+        brew();
+        pour();
+        addCondiments();
+    }
+    
+    private void boilWater() {
+        System.out.println("Boiling water");
+    }
+    
+    protected abstract void brew();
+    
+    private void pour() {
+        System.out.println("Pouring into cup");
+    }
+    
+    protected abstract void addCondiments();
+}
+
+class Tea extends Beverage {
+    @Override
+    protected void brew() {
+        System.out.println("Steeping the tea");
+    }
+    
+    @Override
+    protected void addCondiments() {
+        System.out.println("Adding lemon");
+    }
+}
+
+class Coffee extends Beverage {
+    @Override
+    protected void brew() {
+        System.out.println("Dripping coffee");
+    }
+    
+    @Override
+    protected void addCondiments() {
+        System.out.println("Adding sugar and milk");
+    }
+}`,
+                    hints: [
+                        "prepare() final olmalı (değiştirilemez)",
+                        "prepare() diğer metodları sırayla çağırır",
+                        "Alt sınıflar sadece abstract metodları implement eder",
+                        "İş akışı sabit, adımlar değişken"
+                    ],
+                    requiredKeywords: ["abstract class Beverage", "final void prepare", "abstract void brew"],
+                    successMessage: "Harika! Template Method Pattern'i öğrendin."
+                },
+                {
+                    title: "Abstract Class with Fields",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 State Paylaşımı</h3>
+                        <p>Abstract class'ın interface'den en büyük farkı: <strong>state tutabilir</strong> (instance variables).</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class Counter {
+    protected int count = 0;  // Shared state
+    
+    public void increment() {
+        count++;
+    }
+    
+    public int getCount() {
+        return count;
+    }
+    
+    public abstract void reset();  // Her sınıf farklı reset
+}
+
+class StepCounter extends Counter {
+    private int stepSize;
+    
+    public StepCounter(int stepSize) {
+        this.stepSize = stepSize;
+    }
+    
+    @Override
+    public void increment() {
+        count += stepSize;  // Protected'a erişim
+    }
+    
+    @Override
+    public void reset() {
+        count = 0;
+        System.out.println("Step counter reset");
+    }
+}</pre>
+
+                        <h3>🎯 Önemli</h3>
+                        <p>protected field'lar alt sınıflardan erişilebilir. Ortak state paylaşımı sağlar.</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>ShoppingCart abstract class: items List, addItem(), removeItem() concrete. abstract double calculateTotal(). RegularCart ve PremiumCart (indirim uygula).</p>
+                    `,
+                    starterCode: `// TODO: abstract ShoppingCart
+// protected List<Double> items
+// void addItem(double price)
+// void removeItem(int index)
+// abstract double calculateTotal()
+// TODO: RegularCart - normal toplam
+// TODO: PremiumCart - %10 indirim`,
+                    solution: `import java.util.*;
+
+abstract class ShoppingCart {
+    protected List<Double> items;
+    
+    public ShoppingCart() {
+        this.items = new ArrayList<>();
+    }
+    
+    public void addItem(double price) {
+        items.add(price);
+    }
+    
+    public void removeItem(int index) {
+        if (index >= 0 && index < items.size()) {
+            items.remove(index);
+        }
+    }
+    
+    public abstract double calculateTotal();
+}
+
+class RegularCart extends ShoppingCart {
+    @Override
+    public double calculateTotal() {
+        double total = 0;
+        for (double price : items) {
+            total += price;
+        }
+        return total;
+    }
+}
+
+class PremiumCart extends ShoppingCart {
+    @Override
+    public double calculateTotal() {
+        double total = 0;
+        for (double price : items) {
+            total += price;
+        }
+        return total * 0.9;  // 10% discount
+    }
+}`,
+                    hints: [
+                        "ArrayList kullan",
+                        "protected List field",
+                        "Alt sınıflar items'a erişebilir",
+                        "PremiumCart'ta 0.9 ile çarp"
+                    ],
+                    requiredKeywords: ["abstract class ShoppingCart", "protected List", "abstract double calculateTotal"],
+                    successMessage: "Mükemmel! State paylaşımını öğrendin."
+                },
+                {
+                    title: "Partial Implementation",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Kısmi Implementation</h3>
+                        <p>Abstract class bazı metodları implement eder, bazılarını abstract bırakır. Bu "partial implementation" dır.</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class HttpRequest {
+    protected String url;
+    protected Map<String, String> headers;
+    
+    public HttpRequest(String url) {
+        this.url = url;
+        this.headers = new HashMap<>();
+    }
+    
+    public void addHeader(String key, String value) {
+        headers.put(key, value);
+    }
+    
+    public String getUrl() {
+        return url;
+    }
+    
+    // Alt sınıflar bunları implement etmeli
+    public abstract void send();
+    public abstract String getMethod();
+}
+
+class GetRequest extends HttpRequest {
+    public GetRequest(String url) {
+        super(url);
+    }
+    
+    @Override
+    public void send() {
+        System.out.println("Sending GET to " + url);
+    }
+    
+    @Override
+    public String getMethod() {
+        return "GET";
+    }
+}</pre>
+
+                        <h3>🎯 Fayda</h3>
+                        <p>Ortak işlevsellik (addHeader, getUrl) tekrar etmiyor. Sadece farklı olanlar (send, getMethod) abstract.</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>FileHandler abstract class: filename field, open() ve close() concrete, abstract read() ve write().</p>
+                    `,
+                    starterCode: `// TODO: abstract FileHandler
+// protected String filename
+// void open() - concrete
+// void close() - concrete
+// abstract String read()
+// abstract void write(String content)
+// TODO: TextFileHandler extends FileHandler`,
+                    solution: `abstract class FileHandler {
+    protected String filename;
+    protected boolean isOpen;
+    
+    public FileHandler(String filename) {
+        this.filename = filename;
+        this.isOpen = false;
+    }
+    
+    public void open() {
+        isOpen = true;
+        System.out.println("Opening file: " + filename);
+    }
+    
+    public void close() {
+        isOpen = false;
+        System.out.println("Closing file: " + filename);
+    }
+    
+    public abstract String read();
+    public abstract void write(String content);
+}
+
+class TextFileHandler extends FileHandler {
+    private String content = "";
+    
+    public TextFileHandler(String filename) {
+        super(filename);
+    }
+    
+    @Override
+    public String read() {
+        if (!isOpen) {
+            return "File not open";
+        }
+        return content;
+    }
+    
+    @Override
+    public void write(String content) {
+        if (isOpen) {
+            this.content = content;
+            System.out.println("Writing to " + filename);
+        }
+    }
+}`,
+                    hints: [
+                        "open() ve close() concrete olsun",
+                        "isOpen flag ekle",
+                        "read() ve write() abstract",
+                        "TextFileHandler memory'de tut"
+                    ],
+                    requiredKeywords: ["abstract class FileHandler", "void open()", "abstract String read"],
+                    successMessage: "Süper! Partial implementation öğrendin."
+                },
+                {
+                    title: "Abstract Class Hierarchy",
+                    difficulty: "Medium",
+                    description: `
+                        <h3>📚 Abstract Class Zinciri</h3>
+                        <p>Abstract class başka abstract class'ı extend edebilir! Hiyerarşi oluşturabilirsin.</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class Living {
+    public abstract void breathe();
+}
+
+abstract class Animal extends Living {
+    public abstract void move();
+    
+    @Override
+    public void breathe() {
+        System.out.println("Breathing oxygen");
+    }
+}
+
+abstract class Mammal extends Animal {
+    public abstract void feedMilk();
+    
+    @Override
+    public void move() {
+        System.out.println("Walking on legs");
+    }
+}
+
+class Dog extends Mammal {
+    @Override
+    public void feedMilk() {
+        System.out.println("Feeding puppies milk");
+    }
+}</pre>
+
+                        <h3>🎯 Fayda</h3>
+                        <p>Her seviye kendi sorumluluğunu alır. Dog sadece feedMilk() implement eder, geri kalanlar zaten implement edilmiş.</p>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Machine (abstract powerOn()), Vehicle extends Machine (abstract move(), powerOn implement), Car extends Vehicle (move implement).</p>
+                    `,
+                    starterCode: `// TODO: abstract Machine - abstract powerOn()
+// TODO: abstract Vehicle extends Machine - abstract move(), powerOn implement
+// TODO: Car extends Vehicle - move implement`,
+                    solution: `abstract class Machine {
+    public abstract void powerOn();
+}
+
+abstract class Vehicle extends Machine {
+    @Override
+    public void powerOn() {
+        System.out.println("Vehicle powered on");
+    }
+    
+    public abstract void move();
+}
+
+class Car extends Vehicle {
+    @Override
+    public void move() {
+        System.out.println("Car moving on road");
+    }
+}`,
+                    hints: [
+                        "Abstract class başka abstract'ı extend edebilir",
+                        "Her seviye bazı metodları implement eder",
+                        "Car sadece move() implement eder",
+                        "powerOn zaten Vehicle'da implement edilmiş"
+                    ],
+                    requiredKeywords: ["abstract class Machine", "abstract class Vehicle extends Machine", "class Car extends Vehicle"],
+                    successMessage: "Harika! Abstract class hiyerarşisini öğrendin."
+                },
+                {
+                    title: "Final Methods in Abstract Class",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>📚 Final Methods</h3>
+                        <p>Abstract class'ta <strong>final</strong> metodlar olabilir. Alt sınıflar bunları override edemez!</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>abstract class Processor {
+    public final void execute() {  // Override edilemez!
+        initialize();
+        process();
+        cleanup();
+    }
+    
+    protected abstract void initialize();
+    protected abstract void process();
+    
+    protected final void cleanup() {  // Override edilemez!
+        System.out.println("Cleaning up resources");
+    }
+}</pre>
+
+                        <h3>🎯 Ne Zaman Final?</h3>
+                        <ul>
+                            <li>Değiştirilmemesi gereken kritik iş akışı</li>
+                            <li>Güvenlik gereksinimleri</li>
+                            <li>Template method pattern'de ana metod</li>
+                        </ul>
+
+                        <h3>❌ Hata</h3>
+                        <pre>class MyProcessor extends Processor {
+    @Override
+    public void execute() {  // ERROR! final method
+        // ...
+    }
+}</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Transaction abstract class: final execute() (begin, process, commit), abstract process(), final rollback().</p>
+                    `,
+                    starterCode: `// TODO: abstract Transaction
+// final void execute() - template
+// abstract void process()
+// final void rollback()
+// TODO: PaymentTransaction extends Transaction`,
+                    solution: `abstract class Transaction {
+    public final void execute() {
+        begin();
+        try {
+            process();
+            commit();
+        } catch (Exception e) {
+            rollback();
+        }
+    }
+    
+    private void begin() {
+        System.out.println("Transaction started");
+    }
+    
+    protected abstract void process();
+    
+    private void commit() {
+        System.out.println("Transaction committed");
+    }
+    
+    protected final void rollback() {
+        System.out.println("Transaction rolled back");
+    }
+}
+
+class PaymentTransaction extends Transaction {
+    @Override
+    protected void process() {
+        System.out.println("Processing payment");
+    }
+}`,
+                    hints: [
+                        "final metodlar override edilemez",
+                        "execute() final olmalı",
+                        "rollback() final olmalı",
+                        "Sadece process() override edilebilir"
+                    ],
+                    requiredKeywords: ["abstract class Transaction", "final void execute", "abstract void process"],
+                    successMessage: "Mükemmel! Final methods kullanımını öğrendin."
+                },
+                {
+                    title: "Combining Abstract & Interface",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>📚 Abstract Class + Interface Birlikte</h3>
+                        <p>Bir sınıf hem abstract class extend eder, hem interface implement edebilir!</p>
+
+                        <h3>💡 Örnek</h3>
+                        <pre>interface Saveable {
+    void save();
+}
+
+interface Loadable {
+    void load();
+}
+
+abstract class Document {
+    protected String content;
+    
+    public abstract void format();
+    
+    public String getContent() {
+        return content;
+    }
+}
+
+class TextDocument extends Document implements Saveable, Loadable {
+    @Override
+    public void format() {
+        System.out.println("Formatting text");
+    }
+    
+    @Override
+    public void save() {
+        System.out.println("Saving: " + content);
+    }
+    
+    @Override
+    public void load() {
+        content = "Loaded content";
+    }
+}</pre>
+
+                        <h3>🎯 Best Practice</h3>
+                        <ul>
+                            <li>Abstract class: "is-a" ilişkisi, state paylaşımı</li>
+                            <li>Interface: "can-do" davranışlar</li>
+                            <li>İkisini birlikte kullan!</li>
+                        </ul>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Media abstract class, Downloadable ve Streamable interface'ler. Video sınıfı hem extends hem implements.</p>
+                    `,
+                    starterCode: `// TODO: abstract Media - title field, abstract play()
+// TODO: interface Downloadable - download()
+// TODO: interface Streamable - stream()
+// TODO: Video extends Media implements Downloadable, Streamable`,
+                    solution: `abstract class Media {
+    protected String title;
+    
+    public Media(String title) {
+        this.title = title;
+    }
+    
+    public abstract void play();
+}
+
+interface Downloadable {
+    void download();
+}
+
+interface Streamable {
+    void stream();
+}
+
+class Video extends Media implements Downloadable, Streamable {
+    public Video(String title) {
+        super(title);
+    }
+    
+    @Override
+    public void play() {
+        System.out.println("Playing video: " + title);
+    }
+    
+    @Override
+    public void download() {
+        System.out.println("Downloading video: " + title);
+    }
+    
+    @Override
+    public void stream() {
+        System.out.println("Streaming video: " + title);
+    }
+}`,
+                    hints: [
+                        "extends önce, implements sonra",
+                        "Abstract class state tutar",
+                        "Interface'ler davranış ekler",
+                        "Hepsini implement et"
+                    ],
+                    requiredKeywords: ["abstract class Media", "interface Downloadable", "extends Media implements"],
+                    successMessage: "Süper! Abstract ve Interface kombinasyonunu öğrendin."
+                },
+                {
+                    title: "Abstract Class Final Challenge",
+                    difficulty: "Hard",
+                    description: `
+                        <h3>🎯 Kapsamlı Proje: Game Framework</h3>
+                        <p>Bir oyun framework'ü tasarla:</p>
+
+                        <h3>📋 Gereksinimler</h3>
+                        <ul>
+                            <li><strong>Game</strong> abstract class:
+                                <ul>
+                                    <li>String name, int score fields</li>
+                                    <li>final void start() - template method (initialize, play loop, end)</li>
+                                    <li>abstract void initialize()</li>
+                                    <li>abstract void playTurn()</li>
+                                    <li>void end() - concrete</li>
+                                </ul>
+                            </li>
+                            <li><strong>Pausable</strong> interface: pause(), resume()</li>
+                            <li><strong>TicTacToe</strong>: extends Game implements Pausable</li>
+                        </ul>
+
+                        <h3>💡 Örnek Çıktı</h3>
+                        <pre>Initializing TicTacToe
+Playing turn 1
+Playing turn 2
+Game paused
+Game resumed
+Playing turn 3
+Game ended. Score: 100</pre>
+
+                        <h3>✍️ Görev</h3>
+                        <p>Yukarıdaki framework'ü kodla. main() metodunda test et.</p>
+                    `,
+                    starterCode: `// TODO: abstract Game
+// TODO: interface Pausable
+// TODO: TicTacToe extends Game implements Pausable
+// TODO: main() metodunda test et`,
+                    solution: `abstract class Game {
+    protected String name;
+    protected int score;
+    
+    public Game(String name) {
+        this.name = name;
+        this.score = 0;
+    }
+    
+    public final void start() {
+        System.out.println("Initializing " + name);
+        initialize();
+        
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Playing turn " + i);
+            playTurn();
+            score += 10;
+        }
+        
+        end();
+    }
+    
+    protected abstract void initialize();
+    protected abstract void playTurn();
+    
+    protected void end() {
+        System.out.println("Game ended. Score: " + score);
+    }
+}
+
+interface Pausable {
+    void pause();
+    void resume();
+}
+
+class TicTacToe extends Game implements Pausable {
+    private boolean paused = false;
+    
+    public TicTacToe() {
+        super("TicTacToe");
+    }
+    
+    @Override
+    protected void initialize() {
+        System.out.println("Setting up board");
+    }
+    
+    @Override
+    protected void playTurn() {
+        if (!paused) {
+            System.out.println("Making a move");
+        }
+    }
+    
+    @Override
+    public void pause() {
+        paused = true;
+        System.out.println("Game paused");
+    }
+    
+    @Override
+    public void resume() {
+        paused = false;
+        System.out.println("Game resumed");
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        TicTacToe game = new TicTacToe();
+        game.start();
+    }
+}`,
+                    hints: [
+                        "start() final ve template method",
+                        "Loop içinde playTurn() çağır",
+                        "TicTacToe hem extends hem implements",
+                        "paused flag kullan"
+                    ],
+                    requiredKeywords: ["abstract class Game", "final void start", "interface Pausable", "extends Game implements Pausable", "main"],
+                    successMessage: "🎉 TEBRİKLER! Interface ve Abstract Class konularını tamamen öğrendin! Artık polymorphism konusunda uzman sayılırsın!"
+                }
+            ]
+        };
+
+        let currentTopic = '';
+        let currentProblemIndex = 0;
+        let currentHintIndex = 0;
+        let solvedProblems = JSON.parse(localStorage.getItem('solvedProblems') || '{}');
+
+        function showTopics() {
+            document.getElementById('topics-view').style.display = 'block';
+            document.getElementById('problem-view').classList.remove('active');
+            updateStats();
+        }
+
+        function showTopic(topic) {
+            currentTopic = topic;
+            currentProblemIndex = 0;
+            document.getElementById('topics-view').style.display = 'none';
+            document.getElementById('problem-view').classList.add('active');
+            loadProblem();
+        }
+
+        function loadProblem() {
+            const problem = problems[currentTopic][currentProblemIndex];
+            document.getElementById('problem-title').textContent = problem.title;
+            document.getElementById('problem-difficulty').textContent = problem.difficulty;
+            document.getElementById('problem-difficulty').className = 'difficulty difficulty-' + problem.difficulty.toLowerCase();
+            document.getElementById('problem-number').textContent = `Problem ${currentProblemIndex + 1} / ${problems[currentTopic].length}`;
+            document.getElementById('problem-description').innerHTML = problem.description;
+            
+            const savedCode = localStorage.getItem(getProblemKey());
+            document.getElementById('code-editor').value = savedCode || problem.starterCode || '';
+            
+            document.getElementById('hints-section').classList.remove('visible');
+            document.getElementById('feedback').classList.remove('visible');
+            currentHintIndex = 0;
+            
+            setupHints(problem.hints);
+        }
+
+        function setupHints(hints) {
+            const container = document.getElementById('hints-container');
+            container.innerHTML = '';
+            hints.forEach((hint, index) => {
+                const div = document.createElement('div');
+                div.className = 'hint';
+                div.id = `hint-${index}`;
+                div.textContent = `${index + 1}. ${hint}`;
+                container.appendChild(div);
+            });
+        }
+
+        function showHints() {
+            document.getElementById('hints-section').classList.add('visible');
+            showNextHint();
+        }
+
+        function showNextHint() {
+            const problem = problems[currentTopic][currentProblemIndex];
+            if (currentHintIndex < problem.hints.length) {
+                document.getElementById(`hint-${currentHintIndex}`).classList.add('visible');
+                currentHintIndex++;
+                
+                if (currentHintIndex >= problem.hints.length) {
+                    document.getElementById('next-hint-btn').disabled = true;
+                    document.getElementById('next-hint-btn').textContent = 'Tüm ipuçları gösterildi';
+                }
+            }
+        }
+
+        function showSolution() {
+            const problem = problems[currentTopic][currentProblemIndex];
+            document.getElementById('code-editor').value = problem.solution;
+            
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <div class="feedback-title">✅ Çözüm Gösterildi</div>
+                <div>Çözümü incele ve anlamaya çalış.</div>
+            `;
+            feedback.className = 'feedback visible success';
+        }
+
+        function checkSolution() {
+            const problem = problems[currentTopic][currentProblemIndex];
+            const userCode = document.getElementById('code-editor').value.trim();
+            
+            if (!userCode) {
+                showFeedback(false, 'Kod yazmadın!');
+                return;
+            }
+
+            localStorage.setItem(getProblemKey(), userCode);
+
+            let isCorrect = true;
+            let missingKeywords = [];
+
+            problem.requiredKeywords.forEach(keyword => {
+                if (!userCode.includes(keyword)) {
+                    isCorrect = false;
+                    missingKeywords.push(keyword);
+                }
+            });
+
+            if (isCorrect) {
+                markAsSolved();
+                showFeedback(true, problem.successMessage);
+            } else {
+                showFeedback(false, `Eksik: ${missingKeywords.join(', ')}`);
+            }
+        }
+
+        function showFeedback(success, message) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <div class="feedback-title">${success ? '✅ Doğru!' : '❌ Eksik'}</div>
+                <div>${message}</div>
+            `;
+            feedback.className = `feedback visible ${success ? 'success' : 'error'}`;
+        }
+
+        function markAsSolved() {
+            const key = getProblemKey();
+            solvedProblems[key] = true;
+            localStorage.setItem('solvedProblems', JSON.stringify(solvedProblems));
+            updateStats();
+        }
+
+        function getProblemKey() {
+            return `${currentTopic}-${currentProblemIndex}`;
+        }
+
+        function previousProblem() {
+            if (currentProblemIndex > 0) {
+                currentProblemIndex--;
+                loadProblem();
+            }
+        }
+
+        function nextProblem() {
+            if (currentProblemIndex < problems[currentTopic].length - 1) {
+                currentProblemIndex++;
+                loadProblem();
+            }
+        }
+
+        function clearCode() {
+            if (confirm('Kodu silmek istediğinden emin misin?')) {
+                document.getElementById('code-editor').value = problems[currentTopic][currentProblemIndex].starterCode || '';
+                localStorage.removeItem(getProblemKey());
+            }
+        }
+
+        function updateStats() {
+            let totalSolved = 0;
+            
+            Object.keys(problems).forEach(topic => {
+                let topicSolved = 0;
+                problems[topic].forEach((_, index) => {
+                    if (solvedProblems[`${topic}-${index}`]) {
+                        topicSolved++;
+                        totalSolved++;
+                    }
+                });
+                
+                const percent = (topicSolved / problems[topic].length) * 100;
+                document.getElementById(`${topic}-progress`).textContent = `${topicSolved}/${problems[topic].length}`;
+                document.getElementById(`${topic}-bar`).style.width = `${percent}%`;
+            });
+            
+            document.getElementById('total-solved').textContent = totalSolved;
+        }
+
+        // Tab support
+        document.getElementById('code-editor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Initialize
+        updateStats();
+    </script>
+</body>
+</html>

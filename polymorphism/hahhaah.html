@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Kütüphane Yönetim Sistemi - Java Projesi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .main {
+            padding: 30px 0;
+        }
+        .welcome-box {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .welcome-title {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .step-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .step-card.completed {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .step-card.completed .step-number {
+            background: #4caf50;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .step-phase {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .phase-1 { background: #e3f2fd; color: #1976d2; }
+        .phase-2 { background: #e8f5e9; color: #388e3c; }
+        .phase-3 { background: #fff3e0; color: #f57c00; }
+        .phase-4 { background: #fce4ec; color: #c2185b; }
+        .phase-5 { background: #f3e5f5; color: #7b1fa2; }
+        .phase-6 { background: #e0f2f1; color: #00796b; }
+        .problem-view {
+            display: none;
+        }
+        .problem-view.active {
+            display: block;
+        }
+        .content-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .description h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+        }
+        .description pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+        .description ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .description li {
+            margin: 8px 0;
+        }
+        .highlight-box {
+            background: #e8eaf6;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
+        }
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .feedback.visible {
+            display: block;
+        }
+        .feedback.success {
+            background: #d4edda;
+            border: 2px solid #4caf50;
+            color: #155724;
+        }
+        .feedback.error {
+            background: #f8d7da;
+            border: 2px solid #f44336;
+            color: #721c24;
+        }
+        .hints-section {
+            display: none;
+        }
+        .hints-section.visible {
+            display: block;
+        }
+        .hint {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+        .hint.visible {
+            display: block;
+        }
+        .back-btn {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        .back-btn:hover {
+            background: #f5f5f5;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">📚 Kütüphane Yönetim Sistemi</div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="solved">0</div>
+                        <div class="stat-label">Tamamlanan</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">22</div>
+                        <div class="stat-label">Toplam</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="percent">0%</div>
+                        <div class="stat-label">İlerleme</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="container">
+            <div id="welcome-view">
+                <div class="welcome-box">
+                    <div class="welcome-title">🎯 Hoş Geldin Kanka!</div>
+                    <p style="font-size: 16px; line-height: 1.8; margin-bottom: 15px;">
+                        <strong>2000+ satırlık</strong> gerçek bir Java projesi yapacaksın! 
+                        Portfolio'na koyabileceğin, gerçek dünya problemlerini çözen kapsamlı bir sistem.
+                    </p>
+                    <p style="font-size: 16px; line-height: 1.8;">
+                        <strong>22 adımda</strong> adım adım ilerleyerek 
+                        <strong>Kütüphane & Okuma Topluluğu Yönetim Sistemi</strong> inşa edeceğiz.
+                    </p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <strong style="color: #667eea;">🏗️ OOP Prensipleri</strong>
+                            <div>Inheritance, Interface, Polymorphism</div>
+                        </div>
+                        <div class="feature-card">
+                            <strong style="color: #667eea;">📦 Veri Yapıları</strong>
+                            <div>ArrayList, HashMap, Enum</div>
+                        </div>
+                        <div class="feature-card">
+                            <strong style="color: #667eea;">🎯 Gerçek Özellikler</strong>
+                            <div>Rating, Review, Book Clubs, Events</div>
+                        </div>
+                        <div class="feature-card">
+                            <strong style="color: #667eea;">💡 Akıllı Sistem</strong>
+                            <div>Search, Filter, Recommendations</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="main-progress" style="width: 0%">0%</div>
+                    </div>
+                </div>
+
+                <div class="steps-grid" id="steps-grid"></div>
+            </div>
+
+            <div id="problem-view" class="problem-view">
+                <a href="#" class="back-btn" onclick="showWelcome(); return false;">← Adımlara Dön</a>
+                
+                <div class="content-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <h1 id="problem-title" style="color: #667eea; font-size: 28px;"></h1>
+                            <span id="problem-phase" class="step-phase"></span>
+                            <span id="problem-number" style="color: #666; font-size: 14px;"></span>
+                        </div>
+                        <div>
+                            <button class="btn-secondary" onclick="prevStep()">← Önceki</button>
+                            <button class="btn-secondary" onclick="nextStep()">Sonraki →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-box">
+                    <div class="section-title">📖 Açıklama</div>
+                    <div id="description" class="description"></div>
+                </div>
+
+                <div class="content-box hints-section" id="hints-box">
+                    <div class="section-title">💡 İpuçları</div>
+                    <div id="hints"></div>
+                    <button class="btn-secondary" onclick="showNextHint()" id="hint-btn">Sonraki İpucu</button>
+                </div>
+
+                <div class="content-box">
+                    <div class="section-title">💻 Kodunu Yaz (IntelliJ'de)</div>
+                    <textarea id="editor" placeholder="// Java kodunu IntelliJ'de yaz, buraya yapıştır..."></textarea>
+                    <div class="actions">
+                        <button class="btn-primary" onclick="checkCode()">✅ Kontrol Et</button>
+                        <button class="btn-secondary" onclick="showHints()">💡 İpucu</button>
+                        <button class="btn-secondary" onclick="showSolution()">🔍 Çözüm</button>
+                        <button class="btn-secondary" onclick="clearEditor()">🗑️ Temizle</button>
+                        <button class="btn-secondary" onclick="saveCode()">💾 Kaydet</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                phase: 1, title: "Book Sınıfı - Temel Yapı",
+                desc: `<h3>🎯 Hedef</h3><p><strong>Book</strong> sınıfını oluştur.</p>
+                <h3>📋 Gereksinimler</h3><ul><li>Fields: title, author, isbn, pages, category</li><li>Constructor ve getter'lar</li><li>toString() metodu</li></ul>
+                <h3>💡 Örnek</h3><pre>public class Book {
+    private String title;
+    private String author;
+    
+    public Book(String title, String author, String isbn, int pages, String category) {
+        this.title = title;
+        this.author = author;
+        // ...
+    }
+    
+    public String getTitle() { return title; }
+    // Diğer getter'lar...
+}</pre><div class="highlight-box"><strong>IntelliJ'de Book.java oluştur!</strong></div>`,
+                starter: "// TODO: Book sınıfını oluştur\npublic class Book {\n    // Kodunu yaz\n}",
+                solution: "public class Book {\n    private String title;\n    private String author;\n    private String isbn;\n    private int pages;\n    private String category;\n    \n    public Book(String title, String author, String isbn, int pages, String category) {\n        this.title = title;\n        this.author = author;\n        this.isbn = isbn;\n        this.pages = pages;\n        this.category = category;\n    }\n    \n    public String getTitle() { return title; }\n    public String getAuthor() { return author; }\n    public String getIsbn() { return isbn; }\n    public int getPages() { return pages; }\n    public String getCategory() { return category; }\n    \n    @Override\n    public String toString() {\n        return \"Book: \" + title + \" by \" + author;\n    }\n}",
+                hints: ["private keyword ile field'ları tanımla", "Constructor parametreleri this. ile ata", "Her field için public getter yaz"],
+                keywords: ["class Book", "private", "getTitle", "toString"],
+                msg: "🎉 İlk sınıfını oluşturdun!"
+            },
+            {
+                phase: 1, title: "User Sınıfı - Abstract Class",
+                desc: `<h3>🎯 Abstract User</h3><p>Abstract class oluştur.</p><pre>public abstract class User {
+    protected String name;
+    protected String email;
+    
+    public abstract double getDiscountRate();
+    public abstract boolean canBorrowBook();
+}</pre>`,
+                starter: "// TODO: abstract User",
+                solution: "public abstract class User {\n    protected String name;\n    protected String email;\n    \n    public User(String name, String email) {\n        this.name = name;\n        this.email = email;\n    }\n    \n    public abstract double getDiscountRate();\n    public abstract boolean canBorrowBook();\n}",
+                hints: ["abstract keyword", "protected field'lar"],
+                keywords: ["abstract class User", "abstract double"],
+                msg: "💪 Abstract class!"
+            },
+            {
+                phase: 1, title: "RegularUser & PremiumUser",
+                desc: `<h3>Inheritance</h3><p>User'dan extends et.</p>`,
+                starter: "// TODO: RegularUser ve PremiumUser",
+                solution: "public class RegularUser extends User {\n    public RegularUser(String name, String email) {\n        super(name, email);\n    }\n    public double getDiscountRate() { return 0.0; }\n    public boolean canBorrowBook() { return true; }\n}",
+                hints: ["extends User", "super()"],
+                keywords: ["extends User", "super("],
+                msg: "🔥 Inheritance!"
+            },
+            {
+                phase: 1, title: "Library - ArrayList",
+                desc: `<h3>ArrayList</h3><p>Library sınıfı.</p>`,
+                starter: "// TODO: Library",
+                solution: "import java.util.ArrayList;\n\npublic class Library {\n    private ArrayList<Book> books;\n    \n    public Library() {\n        books = new ArrayList<>();\n    }\n    \n    public void addBook(Book book) {\n        books.add(book);\n    }\n}",
+                hints: ["ArrayList<Book>", "new ArrayList<>()"],
+                keywords: ["ArrayList<Book>", "addBook"],
+                msg: "📚 Library hazır!"
+            },
+            {
+                phase: 1, title: "Search & Filter",
+                desc: `<h3>Arama</h3>`,
+                starter: "// TODO: Search",
+                solution: "public Book findBookByTitle(String title) {\n    for (Book book : books) {\n        if (book.getTitle().equalsIgnoreCase(title)) return book;\n    }\n    return null;\n}",
+                hints: ["for-each", "equalsIgnoreCase()"],
+                keywords: ["findBookByTitle"],
+                msg: "🚀 PHASE 1 TAMAM!"
+            },
+            {
+                phase: 2, title: "Ratable Interface",
+                desc: `<h3>Interface</h3>`,
+                starter: "// TODO: Interface",
+                solution: "public interface Ratable {\n    void addRating(int stars);\n    double getAverageRating();\n}",
+                hints: ["interface keyword"],
+                keywords: ["interface Ratable"],
+                msg: "⭐ Interface!"
+            },
+            {
+                phase: 2, title: "Review Inner Class",
+                desc: `<h3>Inner Class</h3>`,
+                starter: "// TODO: Inner class",
+                solution: "// Book içinde:\npublic class Review {\n    private String userName;\n    private String text;\n}",
+                hints: ["Inner class"],
+                keywords: ["class Review"],
+                msg: "💬 Inner class!"
+            },
+            {
+                phase: 2, title: "Polymorphism",
+                desc: `<h3>Polymorphism</h3>`,
+                starter: "// TODO: Polymorphism",
+                solution: "ArrayList<User> users = new ArrayList<>();\nusers.add(new RegularUser(\"Ali\", \"ali@email.com\"));",
+                hints: ["ArrayList<User>"],
+                keywords: ["ArrayList<User>", "RegularUser"],
+                msg: "🎭 Polymorphism!"
+            },
+            {
+                phase: 2, title: "Rating Integration",
+                desc: `<h3>Rating</h3>`,
+                starter: "// TODO: Rating",
+                solution: "public ArrayList<Book> getTopRatedBooks(int count) {\n    return sortedBooks;\n}",
+                hints: ["Sort"],
+                keywords: ["getTopRatedBooks"],
+                msg: "📊 PHASE 2 TAMAM!"
+            },
+            {
+                phase: 3, title: "ReadingStatus Enum",
+                desc: `<h3>Enum</h3>`,
+                starter: "// TODO: Enum",
+                solution: "public enum ReadingStatus {\n    WANT_TO_READ,\n    CURRENTLY_READING,\n    READ\n}",
+                hints: ["enum"],
+                keywords: ["enum ReadingStatus"],
+                msg: "✅ Enum!"
+            },
+            {
+                phase: 3, title: "Reading List - HashMap",
+                desc: `<h3>HashMap</h3>`,
+                starter: "// TODO: HashMap",
+                solution: "private HashMap<Book, ReadingStatus> readingList = new HashMap<>();",
+                hints: ["HashMap"],
+                keywords: ["HashMap<Book"],
+                msg: "📚 HashMap!"
+            },
+            {
+                phase: 3, title: "Progress Tracking",
+                desc: `<h3>Progress</h3>`,
+                starter: "// TODO: Progress",
+                solution: "private HashMap<Book, Integer> currentPages = new HashMap<>();",
+                hints: ["Integer"],
+                keywords: ["currentPages"],
+                msg: "📖 Progress!"
+            },
+            {
+                phase: 3, title: "Statistics",
+                desc: `<h3>Stats</h3>`,
+                starter: "// TODO: Stats",
+                solution: "public void getReadingStats() {}",
+                hints: ["Stats"],
+                keywords: ["getReadingStats"],
+                msg: "📊 PHASE 3 TAMAM!"
+            },
+            {
+                phase: 4, title: "BookClub Sınıfı",
+                desc: `<h3>BookClub</h3>`,
+                starter: "// TODO: BookClub",
+                solution: "public class BookClub {\n    private String name;\n    private ArrayList<User> members;\n}",
+                hints: ["ArrayList"],
+                keywords: ["class BookClub"],
+                msg: "👥 BookClub!"
+            },
+            {
+                phase: 4, title: "Üye Yönetimi",
+                desc: `<h3>Members</h3>`,
+                starter: "// TODO: Members",
+                solution: "public void addMember(User user) {}",
+                hints: ["add"],
+                keywords: ["addMember"],
+                msg: "🎯 Members!"
+            },
+            {
+                phase: 4, title: "Tartışma",
+                desc: `<h3>Discussion</h3>`,
+                starter: "// TODO: Discussion",
+                solution: "private ArrayList<String> discussions = new ArrayList<>();",
+                hints: ["ArrayList"],
+                keywords: ["discussions"],
+                msg: "💬 Discussion!"
+            },
+            {
+                phase: 5, title: "Event Sınıfı",
+                desc: `<h3>Event</h3>`,
+                starter: "// TODO: Event",
+                solution: "public enum EventStatus { PLANNED, ONGOING }",
+                hints: ["enum"],
+                keywords: ["EventStatus"],
+                msg: "🎉 Event!"
+            },
+            {
+                phase: 5, title: "Katılımcılar",
+                desc: `<h3>Participants</h3>`,
+                starter: "// TODO: Participants",
+                solution: "private ArrayList<User> participants = new ArrayList<>();",
+                hints: ["ArrayList"],
+                keywords: ["participants"],
+                msg: "✅ Participants!"
+            },
+            {
+                phase: 5, title: "Event Durum",
+                desc: `<h3>Status</h3>`,
+                starter: "// TODO: Status",
+                solution: "public void startEvent() {}",
+                hints: ["status"],
+                keywords: ["startEvent"],
+                msg: "🚦 PHASE 5 TAMAM!"
+            },
+            {
+                phase: 6, title: "Recommendations",
+                desc: `<h3>Öneri</h3>`,
+                starter: "// TODO: Recommendations",
+                solution: "public ArrayList<Book> getSimilarBooks(Book book) { return null; }",
+                hints: ["Similar"],
+                keywords: ["getSimilarBooks"],
+                msg: "🤖 Recommendations!"
+            },
+            {
+                phase: 6, title: "Final Test",
+                desc: `<h3>🎉 FİNAL!</h3><p>TEBRİKLER! 2000+ satır Java!</p>`,
+                starter: "// TODO: Final",
+                solution: "// Tüm sistemi test et",
+                hints: ["Test"],
+                keywords: ["Library", "Book"],
+                msg: "🎊🎊🎊 TAMAMLADIN! 🎊🎊🎊"
+            },
+            {
+                phase: 6, title: "Portfolio Hazırlığı",
+                desc: `<h3>📝 Portfolio</h3><p>README yaz, GitHub'a yükle!</p>`,
+                starter: "// README.md oluştur",
+                solution: "# Library Management System\n\nJava OOP projesi...",
+                hints: ["README", "GitHub"],
+                keywords: ["README"],
+                msg: "🏆 PROJEYİ BİTİRDİN!"
+            }
+        ];
+
+        let currentStep = 0;
+        let hintIndex = 0;
+        let solved = JSON.parse(localStorage.getItem('librarySolved') || '{}');
+
+        function initSteps() {
+            const grid = document.getElementById('steps-grid');
+            grid.innerHTML = '';
+            steps.forEach((step, i) => {
+                const card = document.createElement('div');
+                card.className = 'step-card' + (solved[i] ? ' completed' : '');
+                card.onclick = () => loadStep(i);
+                card.innerHTML = `
+                    <span class="step-phase phase-${step.phase}">Phase ${step.phase}</span>
+                    <div class="step-number">${i + 1}</div>
+                    <div class="step-title">${step.title}</div>
+                `;
+                grid.appendChild(card);
+            });
+            updateStats();
+        }
+
+        function loadStep(i) {
+            currentStep = i;
+            const s = steps[i];
+            document.getElementById('welcome-view').style.display = 'none';
+            document.getElementById('problem-view').classList.add('active');
+            document.getElementById('problem-title').textContent = s.title;
+            document.getElementById('problem-phase').textContent = `PHASE ${s.phase}`;
+            document.getElementById('problem-phase').className = `step-phase phase-${s.phase}`;
+            document.getElementById('problem-number').textContent = `Adım ${i+1}/${steps.length}`;
+            document.getElementById('description').innerHTML = s.desc;
+            document.getElementById('editor').value = localStorage.getItem(`libraryCode_${i}`) || s.starter;
+            document.getElementById('hints-box').classList.remove('visible');
+            document.getElementById('feedback').classList.remove('visible');
+            hintIndex = 0;
+            setupHints(s.hints);
+        }
+
+        function setupHints(hints) {
+            const box = document.getElementById('hints');
+            box.innerHTML = '';
+            hints.forEach((h, i) => {
+                const div = document.createElement('div');
+                div.className = 'hint';
+                div.id = `hint-${i}`;
+                div.textContent = `💡 ${h}`;
+                box.appendChild(div);
+            });
+            document.getElementById('hint-btn').disabled = false;
+            document.getElementById('hint-btn').textContent = 'Sonraki İpucu';
+        }
+
+        function showHints() {
+            document.getElementById('hints-box').classList.add('visible');
+            showNextHint();
+        }
+
+        function showNextHint() {
+            const s = steps[currentStep];
+            if (hintIndex < s.hints.length) {
+                document.getElementById(`hint-${hintIndex}`).classList.add('visible');
+                hintIndex++;
+                if (hintIndex >= s.hints.length) {
+                    document.getElementById('hint-btn').disabled = true;
+                    document.getElementById('hint-btn').textContent = '✅ Tüm ipuçları gösterildi';
+                }
+            }
+        }
+
+        function showSolution() {
+            document.getElementById('editor').value = steps[currentStep].solution;
+            showFeedback(true, '✅ Çözüm gösterildi. Incele ve anla!');
+        }
+
+        function checkCode() {
+            const code = document.getElementById('editor').value.trim();
+            if (!code) {
+                showFeedback(false, 'Kod yazmadın!');
+                return;
+            }
+            localStorage.setItem(`libraryCode_${currentStep}`, code);
+            const s = steps[currentStep];
+            let missing = [];
+            s.keywords.forEach(k => {
+                if (!code.includes(k)) missing.push(k);
+            });
+            if (missing.length === 0) {
+                solved[currentStep] = true;
+                localStorage.setItem('librarySolved', JSON.stringify(solved));
+                updateStats();
+                showFeedback(true, s.msg);
+                setTimeout(() => {
+                    if (currentStep < steps.length - 1) {
+                        if (confirm('Sonraki adıma geç?')) nextStep();
+                    } else {
+                        alert('🎉🎉🎉 TEBRİKLER! 🎉🎉🎉');
+                    }
+                }, 1500);
+            } else {
+                showFeedback(false, `Eksik: ${missing.join(', ')}`);
+            }
+        }
+
+        function showFeedback(success, msg) {
+            const fb = document.getElementById('feedback');
+            fb.innerHTML = `<div style="font-weight:600;margin-bottom:10px;">${success ? '✅ Doğru!' : '❌ Eksik'}</div><div>${msg}</div>`;
+            fb.className = `feedback visible ${success ? 'success' : 'error'}`;
+        }
+
+        function prevStep() {
+            if (currentStep > 0) loadStep(currentStep - 1);
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) loadStep(currentStep + 1);
+        }
+
+        function clearEditor() {
+            if (confirm('Kodu sil?')) {
+                document.getElementById('editor').value = steps[currentStep].starter;
+                localStorage.removeItem(`libraryCode_${currentStep}`);
+            }
+        }
+
+        function saveCode() {
+            localStorage.setItem(`libraryCode_${currentStep}`, document.getElementById('editor').value);
+            alert('💾 Kaydedildi!');
+        }
+
+        function showWelcome() {
+            document.getElementById('welcome-view').style.display = 'block';
+            document.getElementById('problem-view').classList.remove('active');
+        }
+
+        function updateStats() {
+            let count = 0;
+            steps.forEach((_, i) => {
+                if (solved[i]) count++;
+            });
+            const pct = Math.round((count / steps.length) * 100);
+            document.getElementById('solved').textContent = count;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('main-progress').style.width = pct + '%';
+            document.getElementById('main-progress').textContent = pct + '%';
+        }
+
+        document.getElementById('editor').addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end);
+                e.target.selectionStart = e.target.selectionEnd = start + 4;
+            }
+        });
+
+        initSteps();
+    </script>
+</body>
+</html>

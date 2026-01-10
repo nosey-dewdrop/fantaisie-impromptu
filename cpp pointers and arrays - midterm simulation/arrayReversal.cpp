@@ -6,16 +6,18 @@ void reverseArr(int arr[], int size){
       // pass by value: not able to mody. nevertheless, this time we give an array. which is a pointer. 
       //we modify it by the pointer itself.
 
+
       // just print. nonsense.
-      int *end = arr + size - 1;
-      for(int i = 0; i < size; i++){
-            cout << *end << " ";
-            end--;
-      }
+      // int *end = arr + size - 1;
+      // for(int i = 0; i < size; i++){
+      //       cout << *end << " ";
+      //       end--;
+      // }
 
       // actually modify it!
-      end = arr + size - 1;
+      int *end = arr + size - 1;
 
+      // why half the size?
       for(int i = 0; i < size / 2; i++){
             int temp = *(arr + i);
             *(arr + i) = *end;

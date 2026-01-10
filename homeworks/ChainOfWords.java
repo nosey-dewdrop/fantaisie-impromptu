@@ -1,3 +1,4 @@
+package homeworks;
 import java.util.Scanner;
 import java.net.URI;
 import java.net.http.HttpClient;
