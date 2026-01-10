@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "GradeBookJava",
+      "request": "launch",
+      "mainClass": "week1.GradeBookJava",
+      "projectName": "moonchild.cpp_5a789995"
+    },
+    {
+      "name": "Run Calculator",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/calculator",
+      "args": [],
+      "cwd": "${workspaceFolder}/projects",
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "MIMode": "lldb"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/damummyphus/moonchild.cpp/week6",
+      "program": "/Users/damummyphus/moonchild.cpp/week6/build/Debug/outDebug"
+    }
+  ]
+}

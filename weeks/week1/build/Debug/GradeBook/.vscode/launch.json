@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/damummyphus/moonchild.cpp/week1/build/Debug/GradeBook",
+      "program": "/Users/damummyphus/moonchild.cpp/week1/build/Debug/GradeBook/build/Debug/outDebug"
+    }
+  ]
+}
