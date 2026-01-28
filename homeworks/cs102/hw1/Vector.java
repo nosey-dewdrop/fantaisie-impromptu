@@ -164,17 +164,13 @@ public class Vector implements Algebraic {
 }
 
 //!NOTES
-/*
-!!!!learn how to use string builder.
-! learn override vs overload vs overwrite
-*/
 
 /*
-- stringBuilder:
-- instanceOf
-- deep copy vs shallow copy 
+- stringBuilder: strings are immutable, creating a new string in each iteration can result stack overflow.
+you might consider string builder object which is created in heap memory and mutable.
+- instanceOf: checks if an object is of a specific type.
+- deep copy vs shallow copy: deep copy creates a new object and copies the values, shallow copy just copies the reference.
 - override: subclass changes the implementation of a method declared in superclass.
 - overload: same method name with different parameters in the same class.
 - overwrite: replacing the existing code with new code.
-
 */
