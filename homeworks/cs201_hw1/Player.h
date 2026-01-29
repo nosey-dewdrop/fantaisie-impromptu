@@ -14,6 +14,9 @@ class Player{
             Player(int id, string& name);
             ~Player();
 
+            Player(const Player& other);              
+            Player& operator=(const Player& other); 
+    
             int getID() const;
             string getUsername() const;
             string* getCards() const;
@@ -26,3 +29,10 @@ class Player{
             void setCards(string* newCards, int count);
 };
 #endif
+
+/*
+* returns a string pointer. starting address for a dynamicaly allocated array. 
+1. destructor.
+2. copy constructor.
+3. assignment operator.
+*/

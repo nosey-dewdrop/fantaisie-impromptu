@@ -1,0 +1,285 @@
+cd /home/claude && python3 << 'PYTHON_EOF'
+import os
+from pathlib import Path
+from collections import defaultdict
+
+base_path = "/tmp/mumu-codes"
+github_base = "https://github.com/nosey-dewdrop/mumu-codes/blob/main"
+
+# Get all code files organized by folder
+all_files = defaultdict(lambda: defaultdict(list))
+
+for root, dirs, files in os.walk(base_path):
+    # Skip hidden directories
+    dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+    
+    rel_path = os.path.relpath(root, base_path)
+    if rel_path == '.':
+        continue
+    
+    # Get code files
+    code_files = [f for f in files if f.endswith(('.py', '.java', '.js', '.cpp', '.html', '.css', '.h', '.md')) 
+                  and not f.startswith('.')]
+    
+    if code_files:
+        parts = rel_path.split(os.sep)
+        main_folder = parts[0]
+        sub_path = '/'.join(parts[1:]) if len(parts) > 1 else 'root'
+        
+        all_files[main_folder][sub_path].extend(code_files)
+
+# Generate complete HTML
+html = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What I have learned:</title>
+    <link rel="icon" href="frog.png" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23b8d4d4;stop-opacity:1" /><stop offset="100%" style="stop-color:%23e8f4f4;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="800" fill="url(%23sky)"/></svg>');
+            background-size: cover;
+            background-position: center;
+            background-color: #c4dcc4;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: rgb(0, 0, 0);
+            background-color: #c4dcc4;
+            margin: 2% auto 40px;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            border-bottom-style: dotted;
+            border-color: #b2c9b2;
+            border-width: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .folder-section {
+            background-color: #b2c9b2;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .folder-header {
+            background-color: #a1baa1;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+
+        .folder-header:hover {
+            background-color: #8da98d;
+        }
+
+        .folder-header::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+
+        .folder-header.active::after {
+            transform: rotate(180deg);
+        }
+
+        .folder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 15px;
+        }
+
+        .folder-content.active {
+            max-height: 5000px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .subfolder {
+            margin: 10px 0;
+            background-color: #c4dcc4;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .subfolder-header {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            border-left: 3px solid #8da98d;
+        }
+
+        .subfolder-header:hover {
+            background-color: #b2c9b2;
+        }
+
+        .subfolder-header::after {
+            content: '▼';
+            font-size: 0.7em;
+            transition: transform 0.3s ease;
+        }
+
+        .subfolder-header.active::after {
+            transform: rotate(180deg);
+        }
+
+        .subfolder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .subfolder-content.active {
+            max-height: 3000px;
+            padding: 10px 15px;
+            overflow-y: auto;
+        }
+
+        .file-link {
+            display: block;
+            padding: 10px 15px;
+            margin: 3px 0;
+            background-color: #d4e8d4;
+            color: #2c5f5f;
+            text-decoration: none;
+            border-radius: 4px;
+            border: 1px dotted #a1baa1;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .file-link:hover {
+            background-color: #c4dcc4;
+            border-color: #8da98d;
+            transform: translateX(5px);
+        }
+
+        .file-link::before {
+            content: '📄 ';
+            margin-right: 8px;
+        }
+
+        .file-link.py::before { content: '🐍 '; }
+        .file-link.java::before { content: '☕ '; }
+        .file-link.js::before { content: '📜 '; }
+        .file-link.cpp::before { content: '⚙️ '; }
+        .file-link.h::before { content: '⚙️ '; }
+        .file-link.html::before { content: '🌐 '; }
+        .file-link.css::before { content: '🎨 '; }
+        .file-link.md::before { content: '📝 '; }
+
+        @media (max-width: 768px) {
+            h1 {
+                margin: 20px 10px;
+                font-size: 1.5em;
+            }
+            .container {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1><u>All the problems solved:</u></h1>
+    
+    <div class="container">
+'''
+
+# Generate sections for each folder
+for folder in sorted(all_files.keys()):
+    html += f'''
+        <div class="folder-section">
+            <div class="folder-header" onclick="toggleFolder(this)">
+                📁 {folder}
+            </div>
+            <div class="folder-content">
+'''
+    
+    for subpath in sorted(all_files[folder].keys()):
+        if subpath == 'root':
+            # Files directly in main folder
+            for file in sorted(all_files[folder][subpath]):
+                ext = file.split('.')[-1] if '.' in file else 'file'
+                github_url = f"{github_base}/{folder}/{file}".replace(' ', '%20')
+                html += f'                <a href="{github_url}" target="_blank" class="file-link {ext}">{file}</a>\n'
+        else:
+            # Files in subfolders
+            subpath_display = subpath.replace('/', ' / ')
+            html += f'''
+                <div class="subfolder">
+                    <div class="subfolder-header" onclick="toggleSubfolder(this)">
+                        📂 {subpath_display}
+                    </div>
+                    <div class="subfolder-content">
+'''
+            
+            for file in sorted(all_files[folder][subpath]):
+                ext = file.split('.')[-1] if '.' in file else 'file'
+                github_url = f"{github_base}/{folder}/{subpath}/{file}".replace(' ', '%20')
+                html += f'                        <a href="{github_url}" target="_blank" class="file-link {ext}">{file}</a>\n'
+            
+            html += '''                    </div>
+                </div>
+'''
+    
+    html += '''            </div>
+        </div>
+'''
+
+html += '''    </div>
+
+    <script>
+        function toggleFolder(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        function toggleSubfolder(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>'''
+
+# Write to file
+with open('/home/claude/portfolio_final.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print("Portfolio created successfully!")
+print(f"Total folders: {len(all_files)}")
+for folder in sorted(all_files.keys()):
+    total = sum(len(files) for files in all_files[folder].values())
+    print(f"  📁 {folder}: {total} files")
+PYTHON_EOF
