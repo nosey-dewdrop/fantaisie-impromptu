@@ -83,7 +83,6 @@ public class Matrix implements Algebraic {
             return new Matrix(result);
       }
 
-
       @Override
       public Algebraic subtract(Algebraic other) {
             if (!(other instanceof Matrix)) {
@@ -139,7 +138,6 @@ public class Matrix implements Algebraic {
             return new Matrix(result);
       }
 
-      // ------ * ------ * ------ * ------ * ------ * ------ * ------ * ------ * ------ *
 
       private Vector multiplyVector(Vector vec) {
             if (this.cols != vec.getLength()) {
@@ -158,54 +156,51 @@ public class Matrix implements Algebraic {
             return new Vector(result);
       }
 
-      // Determinant - only for 2x2 or 3x3
       public Vector determinant() {
             if (rows != cols) {
                   return null;
             }
             
             if (rows == 2) {
-                  // det = ad - bc
                   float det = elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
                   return new Vector(new float[]{det});
             } 
+
             else if (rows == 3) {
-            // Sarrus rule
-            float det = elements[0][0] * elements[1][1] * elements[2][2]
-                        + elements[0][1] * elements[1][2] * elements[2][0]
-                        + elements[0][2] * elements[1][0] * elements[2][1]
-                        - elements[0][2] * elements[1][1] * elements[2][0]
-                        - elements[0][1] * elements[1][0] * elements[2][2]
-                        - elements[0][0] * elements[1][2] * elements[2][1];
-            return new Vector(new float[]{det});
+                  float det = elements[0][0] * elements[1][1] * elements[2][2]
+                              + elements[0][1] * elements[1][2] * elements[2][0]
+                              + elements[0][2] * elements[1][0] * elements[2][1]
+                              - elements[0][2] * elements[1][1] * elements[2][0]
+                              - elements[0][1] * elements[1][0] * elements[2][2]
+                              - elements[0][0] * elements[1][2] * elements[2][1];
+                  return new Vector(new float[]{det});
             }
-            
             return null;
       }
 
       @Override
       public boolean equals(Object other) {
             if (other == null) {
-            return false;
+                  return false;
             }
             
             if (!(other instanceof Matrix)) {
-            return false;
+                  return false;
             }
             
             Matrix otherMat = (Matrix) other;
             
             if (this.rows != otherMat.rows || this.cols != otherMat.cols) {
-            return false;
+                  return false;
             }
             
             final float TOLERANCE = 1e-6f;
             for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                  if (Math.abs(this.elements[i][j] - otherMat.elements[i][j]) > TOLERANCE) {
-                        return false;
+                  for (int j = 0; j < cols; j++) {
+                        if (Math.abs(this.elements[i][j] - otherMat.elements[i][j]) > TOLERANCE) {
+                              return false;
+                        }
                   }
-            }
             }
             
             return true;
@@ -215,17 +210,18 @@ public class Matrix implements Algebraic {
       public String toString() {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < rows; i++) {
-            sb.append("|");
-            for (int j = 0; j < cols; j++) {
-                  sb.append(String.format("%.2f", elements[i][j]));
-                  if (j < cols - 1) {
-                        sb.append(" ");
+                  sb.append("|");
+                  for (int j = 0; j < cols; j++) {
+                        sb.append(String.format("%.2f", elements[i][j]));
+                        if (j < cols - 1) {
+                              sb.append(" ");
+                        }
                   }
-            }
-            sb.append("|");
-            if (i < rows - 1) {
-                  sb.append("\n");
-            }
+
+                  sb.append("|");
+                  if (i < rows - 1) {
+                        sb.append("\n");
+                  }
             }
             return sb.toString();
       }
