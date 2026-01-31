@@ -1,6 +1,3 @@
-import java.nio.file.LinkPermission;
-import java.util.Queue;
-
 public class LTMatrix extends Matrix {
       
       public LTMatrix(float[][] mat){
