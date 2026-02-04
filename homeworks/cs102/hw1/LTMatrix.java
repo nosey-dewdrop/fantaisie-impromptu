@@ -23,7 +23,7 @@ public class LTMatrix extends Matrix {
                               this.elements[i][j] = mat[i][j];
                         }
                   }
-                  System.out.println("Constructed the LTMatrix"); 
+                  //System.out.println("Constructed the LTMatrix"); 
             }
 
             else {

@@ -7,12 +7,18 @@ LTMatrix is a CHILD class of Matrix class.
 so it inherits all methods and attributes of Matrix class.
  */
 
+import java.util.Locale;
+
 public class Matrix implements Algebraic {
 
       protected float[][] elements;
       protected int rows;
       protected int cols;
 
+      /**
+       * 
+       * @param mat the matrix user enters read by readAlgebraic on calculator.
+       */
       public Matrix(float[][] mat) {
             if (mat == null || mat.length == 0) {
                   this.rows = 0;
@@ -73,7 +79,7 @@ public class Matrix implements Algebraic {
             if (this.rows != otherMat.rows || this.cols != otherMat.cols) {
                   return null;
             }
-            
+            // create a result float 2d array with the same size.
             float[][] result = new float[rows][cols];
             for (int i = 0; i < rows; i++) {
                   for (int j = 0; j < cols; j++) {
@@ -155,6 +161,10 @@ public class Matrix implements Algebraic {
             return new Vector(result);
       }
 
+      /**
+       * only works for 2x2 and 3x3
+       * @return
+       */
       public Vector determinant() {
             if (rows != cols) {
                   return null;
@@ -211,7 +221,7 @@ public class Matrix implements Algebraic {
             for (int i = 0; i < rows; i++) {
                   sb.append("|");
                   for (int j = 0; j < cols; j++) {
-                        sb.append(String.format("%.2f", elements[i][j]));
+                        sb.append(String.format(Locale.US, "%.2f", elements[i][j]));
                         if (j < cols - 1) {
                               sb.append(" ");
                         }

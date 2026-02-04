@@ -1,3 +1,5 @@
+import java.util.Locale;
+
 public class Vector implements Algebraic {
 
       private float[] elements;
@@ -46,7 +48,8 @@ public class Vector implements Algebraic {
             
             Vector otherVec = (Vector) other;
             /* other is an algebraic. vector class implements algebraic interface. 
-            so, we can cast other to vector and use the vector specific methods
+            so, we can cast other to vector and use the vector specific methods and vector fields.
+            on algebraic we only have 4 methods but nothing like .length.
             */
 
             if (this.elements.length != otherVec.elements.length) {
@@ -140,6 +143,7 @@ public class Vector implements Algebraic {
                   return false;
             }
             
+            // you can't compare two floats with ==. tolerance helps us to compare both if the differenace is less then 1.10^-6
             final float TOLERANCE = 1e-6f;
             for (int i = 0; i < elements.length; i++) {
                   if (Math.abs(this.elements[i] - otherVec.elements[i]) > TOLERANCE) {
@@ -151,10 +155,14 @@ public class Vector implements Algebraic {
       }
 
       @Override
+      /**
+       * strings are immutable so we use string builder instead of creating new string each time. 
+       * to avoid stack overflow. (i don't know does it happen on java since it happens on c++)
+       */
       public String toString() {
             StringBuilder sb = new StringBuilder(); 
             for (int i = 0; i < elements.length; i++) {
-                  sb.append(String.format("|%.2f|", elements[i]));
+                  sb.append(String.format(Locale.US, "|%.2f|", elements[i]));
                   if (i < elements.length - 1) {
                         sb.append("\n");
                   }

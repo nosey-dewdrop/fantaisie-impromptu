@@ -1,8 +1,9 @@
+import java.util.Locale;
 import java.util.Scanner;
 
 public class LinearAlgebraCalculator {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in).useLocale(Locale.US);;
     public static void main(String[] args) {
         System.out.println("Enter a vector or matrix!!! ");
         Algebraic current = readAlgebraicObject();
@@ -26,10 +27,10 @@ public class LinearAlgebraCalculator {
                 
                 for (int i = 0; i < currentLines.length; i++) {
                     if (i == currentLines.length / 2) {
-                        System.out.println(" " + currentLines[i] + " -  " + resultLines[i]);
+                        System.out.println(" - " + currentLines[i] + " =  " + resultLines[i]);
                     } 
                     else {
-                        System.out.println(" " + currentLines[i] + "    " + resultLines[i]);
+                        System.out.println("   " + currentLines[i] + "    " + resultLines[i]);
                     }
                 }
                 
@@ -105,7 +106,7 @@ public class LinearAlgebraCalculator {
                                 System.out.print(" - ");
                             } 
                             else {
-                                System.out.print("   ");
+                                System.out.print(".  ");
                             }
                             
                             System.out.print(otherLines[i]);
@@ -196,10 +197,11 @@ public class LinearAlgebraCalculator {
 
                 if (current instanceof Vector) {
                     System.out.println("Enter the second vector");
-                    Algebraic other = readAlgebraicObject();
+                    Algebraic other = readAlgebraicObject(); 
 
                     if (other instanceof Vector) {
 
+                        // cast the algebraic into the vector.
                         Vector result = ((Vector) current).crossProduct((Vector) other);
                         
                         if (result != null) {
@@ -317,6 +319,7 @@ public class LinearAlgebraCalculator {
                 }
 
                 if (isLT) {
+                    System.out.println("Constructed the LTMatrix");  
                     return new LTMatrix(elements);
                 }
             }
