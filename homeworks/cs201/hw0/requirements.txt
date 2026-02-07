@@ -1,0 +1,36 @@
+- download files from dijkstra.
+- opened them in remote
+
+make -f /home/cs/saksoy/cs201/2026Spring/hw0/Makefile build
+make -f /home/cs/saksoy/cs201/2026Spring/hw0/Makefile tests
+- to see what is wrong!
+
+- to see what is wrong for only one test.
+make -f /home/cs/saksoy/cs201/2026Spring/hw0/Makefile build
+./test1
+
+- test command:
+cat /home/cs/saksoy/cs201/2026Spring/hw0/test1.cpp
+
+- expected output:
+cat /home/cs/saksoy/cs201/2026Spring/hw0/output1.txt
+
+With diff:
+@@ -1,7 +1,1 @@
+-Course no is set to 100 - what it is
+-Course no is set to 202 - what it should be
+-
+-Welcome to the grade book for CS 101!
+-
+-Welcome to the grade book for CS 202!
+-\n
++""
+
+
+- i did not use vs code remote-ssh. so, i send my files to dijkstra and test.
+in a new terminal
+cd ~/fantaisie- /homeworks/cs201/hw0
+scp GradeBook.cpp su.bilge. .edu.tr:~/cs201_hw0/
+su.bilge@.cs. .edu.tr's password: 
+GradeBook.cpp                                                           100% 3253     5.9KB/s   00:00    
+damummyphus@Damla-MacBook-Air-2 hw0 % 
