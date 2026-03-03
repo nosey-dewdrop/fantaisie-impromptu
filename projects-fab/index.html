@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>damlacik 💐 sanal bir fikir bahçesi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDF6F0;
+            --surface: #FFFFFF;
+            --surface-warm: #FFF9F5;
+            --border: #EDE0E5;
+            --border-hover: #E8C4D0;
+            --rose: #B85C78;
+            --rose-dark: #8E4560;
+            --rose-light: #D4899E;
+            --rose-faint: #F3DFE6;
+            --rose-glow: rgba(184, 92, 120, 0.06);
+            --rose-glow-strong: rgba(184, 92, 120, 0.12);
+            --green: #8B9E7E;
+            --green-soft: #D0DCCB;
+            --green-faint: #EDF2EA;
+            --amber: #C4956A;
+            --amber-faint: #F5E6D5;
+            --text: #2C1E26;
+            --text-mid: #5A4350;
+            --text-soft: #8A7481;
+            --text-faint: #BCA8B2;
+            --fd: 'Instrument Serif', Georgia, serif;
+            --fb: 'DM Sans', -apple-system, sans-serif;
+            --fc: 'Caveat', cursive;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--fb);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* ═══ NAV ═══ */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: 56px;
+            background: rgba(253, 246, 240, 0.88);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border-bottom: 1px solid rgba(237, 224, 229, 0.6);
+            padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+        .nav-brand {
+            font-family: var(--fd); font-size: 20px;
+            cursor: pointer; text-decoration: none; color: var(--text);
+        }
+        .nav-brand em { color: var(--rose); font-style: italic; }
+        .nav-links { display: flex; align-items: center; gap: 22px; }
+        .nav-links a {
+            font-size: 13px; color: var(--text-soft); text-decoration: none;
+            transition: color 0.2s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+            height: 1.5px; background: var(--rose); transform: scaleX(0);
+            transition: transform 0.25s ease;
+        }
+        .nav-links a:hover { color: var(--rose); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .nav-hide { transform: translateY(-100%); pointer-events: none; }
+
+        /* ═══ PAGES ═══ */
+        .page { display: none; position: relative; z-index: 1; }
+        .page.active { display: block; animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 88px 28px 100px; }
+        .container-narrow { max-width: 680px; }
+        .container-xs { max-width: 440px; }
+
+        h1, h2, h3 { font-family: var(--fd); font-weight: 400; }
+        .serif-italic { font-family: var(--fd); font-style: italic; }
+        .handwritten { font-family: var(--fc); }
+
+        /* ═══ BUTTONS ═══ */
+        .btn {
+            background: var(--rose); color: white; border: none;
+            padding: 12px 26px; border-radius: 10px;
+            font-size: 14px; font-family: var(--fb); font-weight: 500;
+            cursor: pointer; transition: all 0.25s; display: inline-block;
+            text-decoration: none;
+        }
+        .btn:hover { background: var(--rose-dark); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184, 92, 120, 0.2); }
+        .btn:active { transform: translateY(0); }
+        .btn-ghost {
+            background: none; border: 1.5px solid var(--border);
+            padding: 12px 26px; border-radius: 10px;
+            font-size: 14px; font-family: var(--fb); color: var(--text-mid);
+            cursor: pointer; transition: all 0.25s; text-decoration: none;
+        }
+        .btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; border-radius: 8px; }
+        .btn-full { width: 100%; text-align: center; }
+
+        /* ═══ FORMS ═══ */
+        input, textarea, select {
+            width: 100%; padding: 13px 16px; border-radius: 10px;
+            border: 1.5px solid var(--border); background: var(--surface);
+            font-size: 14px; font-family: var(--fb); color: var(--text);
+            outline: none; transition: all 0.25s;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--rose-light);
+            box-shadow: 0 0 0 3px var(--rose-glow);
+        }
+        input::placeholder, textarea::placeholder { color: var(--text-faint); }
+        .form-group { margin-bottom: 18px; }
+        .form-label {
+            display: block; font-size: 11px; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--rose); margin-bottom: 7px;
+            font-weight: 500;
+        }
+
+        /* ═══ TAGS ═══ */
+        .tag {
+            display: inline-block; font-size: 10px; color: var(--rose);
+            background: var(--rose-glow); border: 1px solid var(--rose-faint);
+            padding: 2px 9px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .tag-green { color: var(--green); background: var(--green-faint); border-color: var(--green-soft); }
+        .tag-amber { color: var(--amber); background: var(--amber-faint); border-color: #E8D5C0; }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+        /* ═══ CARD GRID — LADYBUG STYLE ═══ */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .grid-card {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .grid-card:hover {
+            border-color: var(--rose);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px var(--rose-glow-strong);
+        }
+        .grid-card .card-icon {
+            font-size: 24px; margin-bottom: 4px;
+        }
+        .grid-card h3 {
+            font-family: var(--fd); font-style: italic;
+            font-size: 1.15rem; color: var(--text); line-height: 1.3;
+        }
+        .grid-card p {
+            font-size: 13px; color: var(--text-soft); line-height: 1.6;
+            font-weight: 300;
+        }
+        .grid-card .card-meta {
+            font-size: 11px; color: var(--text-faint); margin-top: auto;
+            padding-top: 8px;
+        }
+        .grid-card .card-tag {
+            position: absolute; top: 16px; right: 16px;
+        }
+
+        /* ═══ SECTION HEADERS ═══ */
+        .section-label {
+            font-size: 11px; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--rose);
+            font-weight: 500; margin-bottom: 8px;
+        }
+        .section-title {
+            font-family: var(--fd); font-style: italic; font-size: 2rem;
+            color: var(--text); margin-bottom: 4px;
+        }
+        .section-desc {
+            font-size: 14px; color: var(--text-soft); margin-bottom: 0;
+        }
+
+        /* ═══ PLAYLIST SECTION ═══ */
+        .playlist-card {
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 14px; padding: 18px 22px;
+            display: flex; align-items: center; gap: 16px;
+            cursor: pointer; transition: all 0.25s;
+            margin-bottom: 10px;
+        }
+        .playlist-card:hover {
+            border-color: var(--rose); transform: translateX(4px);
+            box-shadow: 0 4px 16px var(--rose-glow);
+        }
+        .playlist-rank {
+            font-family: var(--fd); font-size: 24px; color: var(--rose-light);
+            min-width: 28px; text-align: center;
+        }
+        .playlist-info { flex: 1; }
+        .playlist-info h4 { font-family: var(--fd); font-style: italic; font-size: 1rem; color: var(--text); font-weight: 400; }
+        .playlist-info p { font-size: 12px; color: var(--text-soft); }
+        .playlist-likes { font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+
+        /* ═══ THREAD GUESTBOOK ═══ */
+        .thread { margin-bottom: 16px; }
+        .thread-main {
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 14px; padding: 16px 20px;
+            transition: all 0.2s;
+        }
+        .thread-main:hover { border-color: var(--border-hover); }
+        .thread-author { font-size: 13px; font-weight: 500; color: var(--rose); }
+        .thread-msg { font-size: 14px; color: var(--text-mid); margin-top: 3px; }
+        .thread-time { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+        .thread-reply-btn {
+            font-size: 11px; color: var(--text-faint); cursor: pointer;
+            background: none; border: none; font-family: var(--fb);
+            margin-left: 12px; transition: color 0.2s;
+        }
+        .thread-reply-btn:hover { color: var(--rose); }
+        .thread-replies {
+            margin-left: 28px; padding-left: 16px;
+            border-left: 2px solid var(--rose-faint);
+        }
+        .reply-bubble {
+            background: var(--surface-warm); border-radius: 10px;
+            padding: 10px 16px; margin-top: 8px;
+        }
+        .reply-bubble .thread-author { font-size: 12px; }
+        .reply-bubble .thread-msg { font-size: 13px; }
+
+        /* ═══ MESSAGES ═══ */
+        .msg-list { display: flex; flex-direction: column; gap: 2px; }
+        .msg-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px; border-radius: 12px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .msg-item:hover { background: var(--surface); }
+        .msg-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose-faint), var(--green-soft));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .msg-preview { flex: 1; min-width: 0; }
+        .msg-preview h4 { font-size: 14px; color: var(--text); font-weight: 500; }
+        .msg-preview p { font-size: 12px; color: var(--text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .msg-time { font-size: 11px; color: var(--text-faint); white-space: nowrap; }
+        .msg-unread { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); flex-shrink: 0; }
+
+        .chat-window { display: flex; flex-direction: column; height: 60vh; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 8px; }
+        .chat-bubble {
+            max-width: 70%; padding: 10px 16px; border-radius: 14px;
+            font-size: 14px; line-height: 1.5;
+        }
+        .chat-bubble.them {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text-mid); align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-bubble.me {
+            background: var(--rose); color: white;
+            align-self: flex-end; border-bottom-right-radius: 4px;
+        }
+        .chat-input-bar {
+            display: flex; gap: 8px; padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ═══ CLUB GRID ═══ */
+        .club-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        /* ═══ INTEREST GRID ═══ */
+        .interest-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px; margin: 28px 0;
+        }
+        .interest-item {
+            padding: 12px; border: 1.5px solid var(--border); border-radius: 10px;
+            text-align: center; cursor: pointer; font-size: 14px;
+            font-family: var(--fd); font-style: italic; color: var(--text-mid);
+            transition: all 0.25s;
+        }
+        .interest-item:hover { border-color: var(--rose-faint); transform: translateY(-2px); }
+        .interest-item.selected {
+            background: var(--rose); color: white; border-color: var(--rose);
+            transform: translateY(-2px); box-shadow: 0 4px 16px rgba(184,92,120,0.2);
+        }
+
+        /* ═══ AVATAR ═══ */
+        .avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--rose-faint), var(--green-soft));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; flex-shrink: 0;
+        }
+
+        /* ═══ OVERLAY ═══ */
+        .overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(253, 246, 240, 0.97); z-index: 200;
+            justify-content: center; align-items: center; text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .overlay.active { display: flex; animation: fadeUp 0.4s ease; }
+
+        /* ═══ FOOTER ═══ */
+        .footer-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(253, 246, 240, 0.85); backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(237, 224, 229, 0.5);
+            padding: 10px; text-align: center;
+            font-size: 13px; color: var(--text-faint);
+            letter-spacing: 6px; z-index: 50;
+        }
+
+        /* ═══ HERO ═══ */
+        .hero-section {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 0 28px;
+        }
+        .hero-inner { max-width: 580px; margin: 0 auto; width: 100%; }
+        .hero-title {
+            font-family: var(--fd); font-style: italic;
+            font-size: clamp(52px, 11vw, 88px);
+            color: var(--rose); line-height: 0.92;
+            letter-spacing: -3px; margin-bottom: 12px;
+        }
+        .hero-emoji { display: inline-block; animation: bob 3s ease-in-out infinite; }
+        @keyframes bob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(2deg); }
+        }
+        .hero-sub {
+            font-family: var(--fd); font-style: italic;
+            font-size: 20px; color: var(--text-soft);
+            margin-bottom: 8px; opacity: 0; animation: reveal 0.7s ease 0.3s forwards;
+        }
+        .hero-desc {
+            font-size: 15px; color: var(--text-mid); font-weight: 300;
+            max-width: 460px; margin-bottom: 36px; opacity: 0;
+            animation: reveal 0.7s ease 0.5s forwards;
+        }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; animation: reveal 0.7s ease 0.65s forwards; }
+        .hero-footer { margin-top: 72px; display: flex; justify-content: space-between; align-items: center; opacity: 0; animation: reveal 0.7s ease 0.85s forwards; }
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══ FLOWER BTN ═══ */
+        .flower-btn {
+            background: var(--surface); border: 1.5px solid var(--border);
+            padding: 8px 16px; border-radius: 10px; font-size: 13px;
+            font-family: var(--fb); cursor: pointer; transition: all 0.25s;
+            color: var(--text-mid); position: relative;
+        }
+        .flower-btn:hover { border-color: var(--rose); color: var(--rose); transform: scale(1.04); }
+        .flower-pop {
+            position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%); font-size: 18px;
+            animation: pop 0.7s ease forwards; pointer-events: none;
+        }
+        @keyframes pop {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.5); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-35px) scale(1); }
+        }
+
+        /* ═══ TAB BAR ═══ */
+        .tab-bar { display: flex; gap: 0; border-bottom: 1.5px solid var(--border); margin-bottom: 24px; }
+        .tab-item {
+            padding: 10px 20px; font-size: 13px; color: var(--text-soft);
+            cursor: pointer; border-bottom: 2px solid transparent;
+            transition: all 0.2s; font-family: var(--fb); background: none; border-top: none; border-left: none; border-right: none;
+        }
+        .tab-item:hover { color: var(--text); }
+        .tab-item.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 700px) {
+            .card-grid { grid-template-columns: 1fr 1fr; }
+            .club-grid { grid-template-columns: 1fr; }
+            nav { padding: 0 16px; }
+            .container { padding: 80px 16px 100px; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 11px; }
+        }
+        @media (max-width: 480px) {
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav" class="nav-hide">
+    <span class="nav-brand" onclick="go('home')">💐 <em>damlacik</em></span>
+    <div class="nav-links">
+        <a href="#" onclick="go('home')">ana sayfa</a>
+        <a href="#" onclick="go('yazilar')">yazılar</a>
+        <a href="#" onclick="go('playlists')">playlistler</a>
+        <a href="#" onclick="go('clubs')">kulüpler</a>
+        <a href="#" onclick="go('creators')">üreticiler</a>
+        <a href="#" onclick="go('messages')">mesajlar</a>
+        <a href="#" id="nav-user" onclick="go('profile')">profil</a>
+    </div>
+</nav>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+    <div>
+        <div style="font-size:48px; margin-bottom:16px;">🌷</div>
+        <h2 class="serif-italic" id="overlay-title" style="font-size:2.2rem; color:var(--rose); margin-bottom:8px;"></h2>
+        <p id="overlay-desc" style="color:var(--text-soft); margin-bottom:24px;"></p>
+        <button class="btn" onclick="closeOverlay()">tamam 💐</button>
+    </div>
+</div>
+
+<!-- ═══ LANDING ═══ -->
+<section id="landing-page" class="page active">
+    <div class="hero-section">
+        <div class="hero-inner">
+            <h1 class="hero-title"><span class="hero-emoji">💐</span> damlacik</h1>
+            <p class="hero-sub">sanal bir fikir bahçesi</p>
+            <p class="hero-desc">
+                yazılar, kulüpler, playlistler, sohbetler — birlikte düşün, birlikte büyü.
+                <span style="color:var(--text-faint);">youtube kanalının diğer yarısı.</span>
+            </p>
+            <div class="hero-actions">
+                <button class="btn" onclick="go('signup')">katıl 🌱</button>
+                <button class="btn-ghost" onclick="go('login')">giriş yap</button>
+            </div>
+            <div class="hero-footer">
+                <p class="handwritten" style="font-size:18px; color:var(--text-faint);">yapım aşamasında... 💫</p>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="flower-btn" id="flower-btn" onclick="flower()">🌷 çiçek bırak</button>
+                    <span id="flower-count" style="font-size:12px; color:var(--text-faint);">0 çiçek</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ SIGNUP ═══ -->
+<section id="signup-page" class="page">
+    <div class="container container-xs" style="padding-top:14vh;">
+        <h2 class="serif-italic" style="font-size:2.2rem; color:var(--rose); margin-bottom:6px;">hoş geldin 🌱</h2>
+        <p style="font-size:14px; color:var(--text-soft); margin-bottom:28px;">fikir bahçesine katıl.</p>
+        <div class="form-group">
+            <label class="form-label">adın</label>
+            <input type="text" id="signup-name" placeholder="adın">
+        </div>
+        <div class="form-group">
+            <label class="form-label">e-posta</label>
+            <input type="email" placeholder="mail@damlacik.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">şifre</label>
+            <input type="password" placeholder="en az 6 karakter">
+        </div>
+        <button class="btn btn-full" onclick="go('interests')">devam et →</button>
+        <p style="text-align:center; margin-top:18px; font-size:13px; color:var(--text-faint);">
+            zaten üye misin? <a href="#" onclick="go('login')" style="color:var(--rose);">giriş yap</a>
+        </p>
+    </div>
+</section>
+
+<!-- ═══ INTERESTS ═══ -->
+<section id="interests-page" class="page">
+    <div class="container" style="max-width:540px; padding-top:12vh;">
+        <h2 class="serif-italic" style="font-size:2.2rem; color:var(--rose); text-align:center; margin-bottom:4px;">nelerle ilgilenirsin? 🕯️</h2>
+        <p style="text-align:center; font-size:14px; color:var(--text-soft); margin-bottom:4px;">en az 3 seç.</p>
+        <div class="interest-grid" id="interest-grid"></div>
+        <button class="btn btn-full" id="interest-btn" style="opacity:0.4; pointer-events:none;" onclick="finishSignup()">gir 💐</button>
+    </div>
+</section>
+
+<!-- ═══ LOGIN ═══ -->
+<section id="login-page" class="page">
+    <div class="container container-xs" style="padding-top:14vh;">
+        <h2 class="serif-italic" style="font-size:2.2rem; color:var(--rose); margin-bottom:6px;">hoş geldin 💐</h2>
+        <p style="font-size:14px; color:var(--text-soft); margin-bottom:28px;">seni özledik.</p>
+        <div class="form-group">
+            <label class="form-label">e-posta</label>
+            <input type="email" placeholder="mail@damlacik.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">şifre</label>
+            <input type="password" placeholder="••••••">
+        </div>
+        <button class="btn btn-full" onclick="mockLogin()">giriş yap</button>
+        <p style="text-align:center; margin-top:18px; font-size:13px; color:var(--text-faint);">
+            hesabın yok mu? <a href="#" onclick="go('signup')" style="color:var(--rose);">kayıt ol</a>
+        </p>
+    </div>
+</section>
+
+<!-- ═══ HOME — VİTRİN ═══ -->
+<section id="home-page" class="page">
+    <div class="container">
+        <!-- Hero banner -->
+        <div style="margin-bottom:48px;">
+            <h1 class="serif-italic" style="font-size:2.6rem; color:var(--rose); margin-bottom:4px;">hoş geldin 💐</h1>
+            <p style="font-size:15px; color:var(--text-soft); max-width:480px;">yazılar, playlistler, kulüpler, sohbetler — fikir bahçesinde bugün neler var.</p>
+        </div>
+
+        <!-- Yazılar preview -->
+        <div style="margin-bottom:48px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <div>
+                    <div class="section-label">YAZILAR</div>
+                    <h2 class="section-title serif-italic" style="font-size:1.6rem;">son paylaşılanlar</h2>
+                </div>
+                <a href="#" onclick="go('yazilar')" style="font-size:12px; color:var(--rose); text-decoration:none;">tümünü gör →</a>
+            </div>
+            <div class="card-grid" id="home-posts-preview"></div>
+        </div>
+
+        <!-- Playlistler preview -->
+        <div style="margin-bottom:48px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <div>
+                    <div class="section-label">PLAYLİSTLER</div>
+                    <h2 class="section-title serif-italic" style="font-size:1.6rem;">en çok beğenilenler 🎧</h2>
+                </div>
+                <a href="#" onclick="go('playlists')" style="font-size:12px; color:var(--rose); text-decoration:none;">tümünü gör →</a>
+            </div>
+            <div id="home-playlists-preview"></div>
+        </div>
+
+        <!-- Kulüpler preview -->
+        <div style="margin-bottom:48px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <div>
+                    <div class="section-label">KULÜPLER</div>
+                    <h2 class="section-title serif-italic" style="font-size:1.6rem;">birlikte düşünülen yerler 🏺</h2>
+                </div>
+                <a href="#" onclick="go('clubs')" style="font-size:12px; color:var(--rose); text-decoration:none;">tümünü gör →</a>
+            </div>
+            <div class="card-grid" id="home-clubs-preview" style="grid-template-columns: repeat(3, 1fr);"></div>
+        </div>
+
+        <!-- Bottom CTAs -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:28px; text-align:center;">
+                <div style="font-size:24px; margin-bottom:8px;">✎</div>
+                <h3 class="serif-italic" style="font-size:1.3rem; color:var(--text); margin-bottom:6px;">sen de yaz</h3>
+                <p style="font-size:12px; color:var(--text-soft); margin-bottom:14px;">fikirlerini paylaş, toplulukla büyü.</p>
+                <button class="btn btn-sm" onclick="go('apply')">yazar ol</button>
+            </div>
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:28px; text-align:center;">
+                <div style="font-size:24px; margin-bottom:8px;">💌</div>
+                <h3 class="serif-italic" style="font-size:1.3rem; color:var(--text); margin-bottom:6px;">öneri kutusu</h3>
+                <p style="font-size:12px; color:var(--text-soft); margin-bottom:14px;">damlacik seninle büyüyor.</p>
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="home-feedback" placeholder="fikrini bırak..." style="flex:1; font-size:12px; padding:8px 12px;">
+                    <button class="btn btn-sm" onclick="showOverlay('teşekkürler 💐', 'önerin alındı.'); document.getElementById('home-feedback').value='';">gönder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ YAZILAR (LIST) ═══ -->
+<section id="yazilar-page" class="page">
+    <div class="container container-narrow">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px;">
+            <div>
+                <div class="section-label">YAZILAR</div>
+                <h1 class="section-title">tüm yazılar</h1>
+                <p class="section-desc">ilgi alanlarına göre seçildi.</p>
+            </div>
+            <button class="btn-ghost btn-sm" onclick="go('apply')">✎ yazar ol</button>
+        </div>
+        <div id="yazilar-list"></div>
+    </div>
+</section>
+
+<!-- ═══ POST DETAIL ═══ -->
+<section id="post-page" class="page">
+    <div class="container container-narrow">
+        <a href="#" onclick="go('yazilar')" style="font-size:12px; color:var(--text-faint); text-decoration:none;">← yazılara dön</a>
+        <div id="post-detail" style="margin-top:20px;"></div>
+    </div>
+</section>
+
+<!-- ═══ PLAYLISTS ═══ -->
+<section id="playlists-page" class="page">
+    <div class="container container-narrow">
+        <div class="section-label">PLAYLİSTLER</div>
+        <h1 class="section-title" style="margin-bottom:4px;">topluluk playlistleri 🎧</h1>
+        <p class="section-desc" style="margin-bottom:24px;">en çok beğenilenler yukarıda.</p>
+        <div id="playlist-list"></div>
+        <hr class="divider">
+        <h3 class="serif-italic" style="font-size:1.3rem; color:var(--rose); margin-bottom:16px;">playlist paylaş</h3>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="playlist-input" placeholder="spotify / apple music linki veya playlist adı" style="flex:1;">
+            <button class="btn btn-sm" onclick="showOverlay('eklendi 🎶', 'playlist\'in onaya gönderildi.')">paylaş</button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CLUBS ═══ -->
+<section id="clubs-page" class="page">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:4px;">
+            <div>
+                <div class="section-label">KULÜPLER</div>
+                <h1 class="section-title">birlikte düşünülen yerler</h1>
+            </div>
+            <button class="btn btn-sm" onclick="go('create-club')">kulüp kur</button>
+        </div>
+        <p class="section-desc" style="margin-bottom:0;"></p>
+        <div class="club-grid" id="club-grid" style="margin-top:24px;"></div>
+    </div>
+</section>
+
+<!-- ═══ CLUB DETAIL ═══ -->
+<section id="club-detail-page" class="page">
+    <div class="container">
+        <a href="#" onclick="go('clubs')" style="font-size:12px; color:var(--text-faint); text-decoration:none;">← kulüplere dön</a>
+        <div id="club-detail" style="margin-top:20px;"></div>
+    </div>
+</section>
+
+<!-- ═══ CREATE CLUB ═══ -->
+<section id="create-club-page" class="page">
+    <div class="container container-xs">
+        <h2 class="serif-italic" style="font-size:2rem; color:var(--rose); margin-bottom:20px;">kulüp kur 🌿</h2>
+        <div class="form-group">
+            <label class="form-label">kulüp adı</label>
+            <input type="text" placeholder="örn: okuma grubu">
+        </div>
+        <div class="form-group">
+            <label class="form-label">açıklama</label>
+            <textarea rows="3" placeholder="ne hakkında?"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">kategori</label>
+            <select><option>felsefe</option><option>müzik</option><option>sinema</option><option>kitap</option><option>teknoloji</option></select>
+        </div>
+        <button class="btn btn-full" onclick="showOverlay('talep alındı 🌱', 'kulübün incelemeye alındı.')">gönder</button>
+    </div>
+</section>
+
+<!-- ═══ APPLY ═══ -->
+<section id="apply-page" class="page">
+    <div class="container container-xs">
+        <h2 class="serif-italic" style="font-size:2rem; color:var(--rose); margin-bottom:8px;">yazar ol ✎</h2>
+        <p style="font-size:14px; color:var(--text-soft); margin-bottom:24px;">fikirlerini paylaş.</p>
+        <div class="form-group">
+            <label class="form-label">kendinden bahset</label>
+            <textarea rows="3" placeholder="kim olduğun, ne düşündüğün..."></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">örnek yazı konusu</label>
+            <textarea rows="4" placeholder="ne hakkında yazmak istersin?"></textarea>
+        </div>
+        <button class="btn btn-full" onclick="showOverlay('başvurun alındı 🌷', 'en kısa sürede döneceğiz.')">başvur</button>
+    </div>
+</section>
+
+<!-- ═══ MESSAGES ═══ -->
+<section id="messages-page" class="page">
+    <div class="container container-narrow">
+        <div class="section-label">MESAJLAR</div>
+        <h1 class="section-title" style="margin-bottom:4px;">sohbetlerin 💌</h1>
+        <p class="section-desc" style="margin-bottom:20px;">mutual takip ettiğin kişilerle mesajlaş.</p>
+        <div id="msg-list" class="msg-list"></div>
+    </div>
+</section>
+
+<!-- ═══ CHAT ═══ -->
+<section id="chat-page" class="page">
+    <div class="container container-narrow">
+        <a href="#" onclick="go('messages')" style="font-size:12px; color:var(--text-faint); text-decoration:none;">← mesajlara dön</a>
+        <div id="chat-header" style="margin:16px 0 8px; display:flex; align-items:center; gap:12px;"></div>
+        <div class="chat-window">
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input-bar">
+                <input type="text" id="chat-input" placeholder="mesajını yaz..." style="flex:1;">
+                <button class="btn btn-sm" onclick="sendChat()">gönder</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ PROFILE ═══ -->
+<section id="profile-page" class="page">
+    <div class="container container-narrow">
+        <div style="display:flex; gap:20px; align-items:center; margin-bottom:40px;">
+            <div class="avatar">💐</div>
+            <div>
+                <h1 class="serif-italic" id="prof-name" style="font-size:2.2rem; color:var(--text); margin-bottom:2px;"></h1>
+                <div id="prof-tags" style="display:flex; gap:5px; margin-top:8px; flex-wrap:wrap;"></div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:36px;">
+            <div style="text-align:center; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px;">
+                <div style="font-family:var(--fd); font-size:24px; color:var(--rose);">12</div>
+                <div style="font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.08em;">yazı</div>
+            </div>
+            <div style="text-align:center; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px;">
+                <div style="font-family:var(--fd); font-size:24px; color:var(--rose);">3</div>
+                <div style="font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.08em;">kulüp</div>
+            </div>
+            <div style="text-align:center; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px;">
+                <div style="font-family:var(--fd); font-size:24px; color:var(--rose);">47</div>
+                <div style="font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.08em;">çiçek</div>
+            </div>
+        </div>
+
+        <h2 class="serif-italic" style="font-size:1.5rem; color:var(--rose); margin-bottom:16px;">ziyaretçi defteri 📖</h2>
+        <div id="guestbook"></div>
+        <div style="display:flex; gap:8px; margin-top:16px;">
+            <input type="text" id="gb-input" placeholder="bir şey yaz..." style="flex:1;">
+            <button class="btn btn-sm" onclick="addNote()">gönder 🌷</button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CREATORS ═══ -->
+<section id="creators-page" class="page">
+    <div class="container" style="max-width:720px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:6px;">
+            <div>
+                <div class="section-label">İÇERİK ÜRETİCİLERİ</div>
+                <h1 class="section-title">birlikte üret 🎙️</h1>
+                <p class="section-desc">youtube, podcast, blog — fikir paylaş, geri bildirim al, birlikte büyü.</p>
+            </div>
+            <span style="font-size:12px; color:var(--text-faint);" id="creator-count"></span>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="tab-bar" style="margin-top:20px;">
+            <button class="tab-item active" onclick="showCreatorTab('ideas', this)">💡 fikirler</button>
+            <button class="tab-item" onclick="showCreatorTab('events', this)">📅 etkinlikler</button>
+        </div>
+
+        <!-- Fikirler tab -->
+        <div id="creator-tab-ideas">
+            <div id="creator-ideas-list"></div>
+            <div style="margin-top:20px; background:var(--surface-warm); border:1.5px dashed var(--border); border-radius:14px; padding:18px;">
+                <p style="font-size:12px; color:var(--text-soft); margin-bottom:10px;">💡 yeni fikir öner</p>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="new-creator-idea" placeholder="içerik fikrin ne?" style="flex:1; font-size:13px;">
+                    <button class="btn btn-sm" onclick="addCreatorIdea()">paylaş</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkinlikler tab -->
+        <div id="creator-tab-events" style="display:none;">
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:22px; margin-bottom:12px; cursor:pointer;" onclick="toggleEventDetail('cr-evt-0')">
+                <strong style="font-size:14px; color:var(--text);">ilk 1000 abone: ne işe yaradı, ne yaramadı</strong><br>
+                <span style="font-size:12px; color:var(--text-faint);">pazar, 18:00 · zoom · online</span>
+                <div id="cr-evt-0" style="display:none; margin-top:12px; padding:14px; background:var(--surface-warm); border-radius:10px;">
+                    <p style="font-size:13px; color:var(--text-mid); line-height:1.6; margin-bottom:10px;">ilk 1000 abone sürecinde yapılan hatalar ve işe yarayan stratejiler. samimi bir sohbet.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:var(--text-faint);">👥 26 katılımcı</span>
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); this.textContent='✓ katılıyorum'; this.style.background='var(--green)'">katıl</button>
+                    </div>
+                </div>
+            </div>
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:22px; cursor:pointer;" onclick="toggleEventDetail('cr-evt-1')">
+                <strong style="font-size:14px; color:var(--text);">thumbnail & hook atölyesi</strong><br>
+                <span style="font-size:12px; color:var(--text-faint);">30 mart, 20:00 · discord · online</span>
+                <div id="cr-evt-1" style="display:none; margin-top:12px; padding:14px; background:var(--surface-warm); border-radius:10px;">
+                    <p style="font-size:13px; color:var(--text-mid); line-height:1.6; margin-bottom:10px;">tıklanma oranını artıran thumbnail tasarımı ve video girişleri üzerine pratik çalışma.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:var(--text-faint);">👥 19 katılımcı</span>
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); this.textContent='✓ katılıyorum'; this.style.background='var(--green)'">katıl</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="footer-bar">🌼 💫 🌙 ✨ 🌻 💐 🌷</div>
+
+<script>
+const data = {
+    user: null,
+    flowers: 0,
+    selectedInterests: [],
+    interests: [
+        "felsefe", "psikoloji", "müzik", "edebiyat", "eleştiri", "sinema",
+        "teknoloji", "sosyoloji", "şiir", "sanat tarihi", "müzik teorisi",
+        "astroloji", "slow living", "varoluşçuluk"
+    ],
+    posts: [
+        { id:1, icon:"📻", title:"radiohead ve melankoli estetiği", cat:"müzik", author:"caner", likes:112, comms:24,
+          body:"ok computer'dan kid a'ya geçiş, sadece müzikal bir evrim değil — bir varoluşsal kriz. thom yorke'un sesi, elektronik dokunun altında erirken, biz de modern dünyanın gürültüsünde eriyoruz.\n\nhow to disappear completely'yi ilk dinlediğimde 17 yaşındaydım. o şarkıda bir şey var — seni yok ediyor ama aynı zamanda tam da o yoklukta buluyorsun kendini. radiohead'in dehası bu: sana hiçbir şey vaat etmiyor, ama tam da bu yüzden güveniyorsun." },
+        { id:2, icon:"🧱", title:"pink floyd: the wall'un psikolojisi", cat:"müzik", author:"elif", likes:98, comms:31,
+          body:"roger waters duvar inşa ediyor — tuğla tuğla. her travma bir tuğla. çocukluk, savaş, eğitim sistemi, ün. ve sonunda duvarın arkasında yapayalnız kalıyor.\n\ncomfortably numb belki de rock tarihinin en dürüst şarkısı. 'i have become comfortably numb' — bu bir itiraf, bir teşhis ve bir yas aynı anda. floyd bize diyor ki: hissizleşmek de bir acı biçimi." },
+        { id:3, icon:"📖", title:"dostoyevski: budala'da prens mışkin", cat:"edebiyat", author:"hakan", likes:156, comms:42,
+          body:"mışkin 'iyi' bir insan — gerçekten iyi. ama dünya iyi insanları yiyor. dostoyevski soruyor: tamamen iyi bir insan bu dünyada var olabilir mi? cevap yıkıcı.\n\nbudala'yı okurken kendinizi mışkin'de bulursanız korkmayın. o naiflik bir zayıflık değil, bir tür cesaret. ama dostoyevski bize gösteriyor ki bu cesaretin bedeli ağır." },
+        { id:4, icon:"🕳️", title:"yeraltından notlar: ilk varoluşçu çığlık", cat:"edebiyat", author:"selen", likes:89, comms:19,
+          body:"'ben hasta bir insanım... ben kötü bir insanım.' böyle başlıyor. ve bu açılış cümlesi, edebiyat tarihinin en dürüst girişi olabilir.\n\ndostoyevski'nin yeraltı adamı, bilinçli olmanın lanetini yaşıyor. fazla düşünmek felç ediyor, fazla hissetmek yıkıyor. modern insanın prototipi — 1864'te yazılmış ama sanki dün." },
+        { id:5, icon:"🎵", title:"coltrane: a love supreme analizi", cat:"müzik", author:"derya", likes:67, comms:15,
+          body:"dört bölümlük bu süit, coltrane'in tanrıya mektubu. acknowledgement'taki tekrarlayan motif, bir mantra. resolution'daki saksafon dua ediyor.\n\njazz'ı anlamak için teori bilmek şart değil. a love supreme'i dinlerken gözlerini kapat ve bırak. coltrane zaten seni götürecek." },
+        { id:6, icon:"⚡", title:"nietzsche ve amor fati", cat:"felsefe", author:"mert", likes:201, comms:54,
+          body:"kaderini sev. nietzsche'nin bu basit ama yıkıcı fikri, aslında en radikal özgürlük biçimi. acıyı reddetmek yerine kucaklamak — bu pasiflik değil, en derin cesaret.\n\ninsanlar nietzsche'yi yanlış okuyor. 'güç istenci' ego değil, kendini aşma. 'üstinsan' kibir değil, sorumluluk. amor fati ise teslim olmak değil — her şeye rağmen evet demek." },
+        { id:7, icon:"🎬", title:"tarkovski sinemasında zaman", cat:"sinema", author:"zeynep", likes:74, comms:16,
+          body:"tarkovski'de zaman akmaz, birikir. stalker'daki uzun planlar sıkıcı değil — zamanın gerçek hızını gösteriyor. biz hızlandık, zaman hızlanmadı.\n\nmodern sinema sana bir şeyleri 'anlatmaya' çalışıyor. tarkovski sana 'yaşatıyor.' aradaki fark devasa." },
+        { id:8, icon:"🧠", title:"jung'un gölge arketipi", cat:"psikoloji", author:"ada", likes:88, comms:22,
+          body:"kabul etmediğimiz her şey gölgemiz olur. jung diyor ki: canavarınla tanış, yoksa o seninle tanışır.\n\ngölge kötülük değil. bastırdığın her şey — öfke, kıskançlık, korku — orada birikir. ve bir gün patlar. jung'un terapisi bu: gölgeyle dost ol, çünkü o da sensin." },
+        { id:9, icon:"🌙", title:"kafka'nın dönüşüm'ünde yabancılaşma", cat:"edebiyat", author:"ali", likes:94, comms:27,
+          body:"gregor samsa bir sabah böceğe dönüşüyor. ama asıl dönüşüm onun değil — ailesinin. önce korku, sonra tiksinti, sonra rahatlama. kafka bize insanın ne kadar kolay 'öteki' yapılabileceğini gösteriyor.\n\ndönüşüm'ü modern iş hayatına uygulamak çok kolay: üretmediğin an değersizleşiyorsun. gregor'un böcekliği metafor değil, gerçek." }
+    ],
+    playlists: [
+        { id:1, name:"gece 3'te dinlenecek şeyler", by:"damla", likes:142, emoji:"🌙", desc:"radiohead, portishead, mazzy star, massive attack" },
+        { id:2, name:"yağmurlu gün jazz", by:"caner", likes:98, emoji:"🌧️", desc:"coltrane, miles davis, bill evans, thelonious monk" },
+        { id:3, name:"felsefe okurken", by:"elif", likes:87, emoji:"📖", desc:"brian eno, nils frahm, ólafur arnalds, max richter" },
+        { id:4, name:"pink floyd deep cuts", by:"mert", likes:76, emoji:"🎸", desc:"echoes, dogs, shine on you crazy diamond, sheep" },
+        { id:5, name:"melankoli ama güzel", by:"ada", likes:64, emoji:"🕯️", desc:"nick drake, elliott smith, sufjan stevens, bon iver" },
+        { id:6, name:"türkçe alternatif", by:"zeynep", likes:52, emoji:"🎤", desc:"mor ve ötesi, duman, manga, athena, şebnem ferah" }
+    ],
+    clubs: [
+        { id:1, name:"okuma kulübü", members:45, icon:"📚", desc:"her ay bir klasik. birlikte okuyoruz, tartışıyoruz.",
+          events:[
+            { title:"kafka — dönüşüm tartışması", date:"cumartesi, 21:00", place:"discord · online", desc:"bu hafta kafka'nın dönüşüm'ünü konuşuyoruz. 3. bölüm ve gregor'un ailesiyle ilişkisi üzerine odaklanacağız. kitabı bitirmiş olmanız önerilir.", attendees:18 },
+            { title:"dostoyevski maratonu: budala", date:"22 mart, 20:00", place:"zoom · online", desc:"prens mışkin'in 'tamamen iyi insan' olma çabası ve bunun bedeli. ilk 200 sayfa tartışılacak.", attendees:12 }
+          ],
+          pollQ:"sıradaki kitap?", pollOpts:["suç ve ceza","sefiller","yabancı"]
+        },
+        { id:2, name:"felsefe sohbetleri", members:32, icon:"🏺", desc:"varoluşçuluk, etik, büyük sorular.",
+          events:[
+            { title:"nietzsche: amor fati ve üstinsan", date:"pazar, 19:00", place:"discord · online", desc:"nietzsche'nin amor fati kavramı ve günlük hayata uygulanması. güç istenci nedir, ne değildir?", attendees:22 },
+            { title:"camus vs sartre: absürt ve angst", date:"29 mart, 20:00", place:"zoom · online", desc:"varoluşçuluğun iki farklı yorumu. sisifos mu, bulantı mı? açık tartışma.", attendees:15 }
+          ],
+          pollQ:"sıradaki odak?", pollOpts:["varoluşçuluk","yapısalcılık","stoacılık"]
+        },
+        { id:3, name:"müzik analizi", members:28, icon:"🎵", desc:"teori, albüm analizi, keşif.",
+          events:[
+            { title:"pink floyd — the wall dinleme seansı", date:"cuma, 22:00", place:"discord · birlikte dinleme", desc:"the wall'u baştan sona birlikte dinleyip her şarkıyı analiz edeceğiz. comfortably numb üzerine özel tartışma.", attendees:24 },
+            { title:"coltrane: a love supreme analizi", date:"28 mart, 21:00", place:"discord · online", desc:"dört bölümlük süitin müzikal ve ruhani analizi. jazz bilmek şart değil.", attendees:16 }
+          ],
+          pollQ:"sıradaki albüm?", pollOpts:["ok computer — radiohead","wish you were here — pink floyd","in rainbows — radiohead"]
+        },
+        { id:4, name:"sinema kulübü", members:19, icon:"🎬", desc:"auteur sineması, bağımsız film, tartışma.",
+          events:[
+            { title:"tarkovski gecesi: stalker", date:"cumartesi, 20:00", place:"discord · birlikte izleme", desc:"stalker'ı birlikte izleyip ardından tartışacağız. tarkovski'de zaman, mekan ve inanç kavramları.", attendees:14 },
+            { title:"bergman vs kubrick", date:"5 nisan, 20:00", place:"zoom · online", desc:"iki dev yönetmenin sinema dilini karşılaştırıyoruz. persona vs 2001.", attendees:9 }
+          ],
+          pollQ:"sıradaki film?", pollOpts:["persona — bergman","mulholland drive — lynch","dogtooth — lanthimos"]
+        },
+        { id:5, name:"girişim kulübü", members:24, icon:"🚀", desc:"fikir, ürün, MVP. birlikte inşa ediyoruz.",
+          events:[
+            { title:"MVP atölyesi: 1 haftada ürün çıkar mı?", date:"cumartesi, 17:00", place:"discord · online", desc:"minimum viable product kavramı ve gerçek örnekler. scope creep'ten kaçınma stratejileri.", attendees:18 },
+            { title:"pitch night: fikrini anlat", date:"2 nisan, 20:00", place:"zoom · online", desc:"3 dakikada fikrini topluluk önünde anlat, geri bildirim al. herkes katılabilir.", attendees:14 }
+          ],
+          pollQ:"sıradaki konu?", pollOpts:["monetizasyon stratejileri","kullanıcı araştırması","no-code araçlar"]
+        }
+    ],
+    creatorMembers: 37,
+    contentIdeas: [
+        { id:101, by:"melis", idea:"'neden herkes tükenmiş' — burnout kültürü üzerine video", status:"tartışılıyor", likes:24, comments:[
+            { from:"arda", msg:"bu çok iyi konu, hustle culture eleştirisiyle birleştir bence" },
+            { from:"zeynep", msg:"maslach burnout inventory'den bahset, akademik bir zemin olsun" },
+            { from:"caner", msg:"ben de benzer bir şey düşünüyordum, belki collab yaparız?" }
+        ]},
+        { id:102, by:"arda", idea:"spotify wrapped ama kitaplar için — yıllık okuma özeti nasıl yapılır", status:"fikir", likes:18, comments:[
+            { from:"melis", msg:"notion template olarak da paylaşabilirsin" },
+            { from:"hakan", msg:"goodreads api kullanılabilir mi acaba?" }
+        ]},
+        { id:103, by:"damla", idea:"'coding is over' — yapay zeka çağında yazılımcı olmak", status:"yazılıyor", likes:31, comments:[
+            { from:"zeynep", msg:"çok merak ediyorum, ne zaman gelecek?" },
+            { from:"arda", msg:"conductor vs orchestra member metaforunu kullan bence" },
+            { from:"melis", msg:"medium yazını da referans ver 🔥" },
+            { from:"caner", msg:"github copilot deneyimlerini de ekle" }
+        ]},
+        { id:104, by:"zeynep", idea:"dostoyevski'yi hiç okumadıysan nereden başla — başlangıç rehberi", status:"fikir", likes:15, comments:[
+            { from:"damla", msg:"bunu birlikte yapalım mı? okuma kulübüyle crossover" },
+            { from:"hakan", msg:"yeraltından notlar ile başla derdim" }
+        ]}
+    ],
+    threads: [
+        {
+            id: 1, from: "melis", msg: "yazılarını çok beğendim, ruhu olan bir kalem 🌷", time: "2 gün önce",
+            replies: [
+                { from: "damla", msg: "çok teşekkür ederim melis, bu çok güzel 💐", time: "2 gün önce" },
+                { from: "arda", msg: "katılıyorum, radiohead yazısı harikaydı", time: "1 gün önce" }
+            ]
+        },
+        {
+            id: 2, from: "arda", msg: "bahçene bir papatya bırakıyorum 🌼 bu platformu çok sevdim", time: "3 gün önce",
+            replies: [
+                { from: "damla", msg: "hoş geldin arda! 🌱", time: "3 gün önce" }
+            ]
+        },
+        {
+            id: 3, from: "zeynep", msg: "dostoyevski yazılarını bekliyorum, budala hakkında konuşacak kimse yoktu hayatımda ✨", time: "5 gün önce",
+            replies: [
+                { from: "hakan", msg: "mışkin yazısını sen de oku mutlaka", time: "4 gün önce" },
+                { from: "damla", msg: "zeynep yeraltından notlar da gelecek, söz 🤝", time: "4 gün önce" }
+            ]
+        },
+        {
+            id: 4, from: "anonim", msg: "burayı keşfettiğime çok sevindim. tam aradığım yerdi.", time: "1 hafta önce",
+            replies: []
+        }
+    ],
+    conversations: [
+        { id:1, name:"Melis", emoji:"🌷", lastMsg:"pink floyd yazısını okudum, çok iyi!", time:"14:32", unread:true },
+        { id:2, name:"Arda", emoji:"🌼", lastMsg:"kulüpte görüşürüz!", time:"dün", unread:false },
+        { id:3, name:"Zeynep", emoji:"✨", lastMsg:"dostoyevski okuma grubu kursak mı?", time:"2 gün", unread:true },
+    ],
+    chatMessages: {
+        1: [
+            { from:"them", msg:"damla pink floyd yazısını okudum, çok iyi!" },
+            { from:"me", msg:"teşekkürler melis 💐 the wall hakkında ayrı bir yazı da gelecek" },
+            { from:"them", msg:"comfortably numb kısmı özellikle çok güzeldi" },
+            { from:"me", msg:"o şarkı beni de her seferinde yıkıyor" },
+            { from:"them", msg:"wish you were here de ekle bence 🎵" },
+        ],
+        2: [
+            { from:"them", msg:"selam! okuma kulübüne katıldım" },
+            { from:"me", msg:"hoş geldin arda! bu ay kafka okuyoruz" },
+            { from:"them", msg:"dönüşüm'ü bitirdim bile, kulüpte görüşürüz!" },
+        ],
+        3: [
+            { from:"them", msg:"damla dostoyevski okuma grubu kursak mı?" },
+            { from:"me", msg:"çok iyi fikir! budala ile başlayalım mı?" },
+            { from:"them", msg:"kesinlikle. sonra karamazov kardeşler" },
+            { from:"me", msg:"haydi kuralım, kulüp başvurusu yapıyorum" },
+        ]
+    }
+};
+
+// ═══ NAV ═══
+function go(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id + '-page').classList.add('active');
+    const nav = document.getElementById('main-nav');
+    const hideNav = ['landing','login','signup','interests'];
+    if (hideNav.includes(id)) { nav.classList.add('nav-hide'); }
+    else { nav.classList.remove('nav-hide'); }
+    if (id === 'home') renderHome();
+    if (id === 'yazilar') renderYazilar();
+    if (id === 'playlists') renderPlaylists();
+    if (id === 'clubs') renderClubs();
+    if (id === 'creators') renderCreators();
+    if (id === 'profile') renderProfile();
+    if (id === 'interests') initInterests();
+    if (id === 'messages') renderMessages();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══ FLOWER ═══
+function flower() {
+    data.flowers++;
+    document.getElementById('flower-count').textContent = data.flowers + ' çiçek';
+    const btn = document.getElementById('flower-btn');
+    const pop = document.createElement('span');
+    pop.className = 'flower-pop';
+    pop.textContent = ['🌷','🌸','🌻','💐','🌼'][Math.floor(Math.random()*5)];
+    btn.appendChild(pop);
+    setTimeout(() => pop.remove(), 700);
+}
+
+// ═══ INTERESTS ═══
+function initInterests() {
+    const grid = document.getElementById('interest-grid');
+    if (grid.children.length > 0) return;
+    data.interests.forEach(int => {
+        const el = document.createElement('div');
+        el.className = 'interest-item';
+        el.textContent = int;
+        el.onclick = () => {
+            el.classList.toggle('selected');
+            const idx = data.selectedInterests.indexOf(int);
+            if (idx > -1) data.selectedInterests.splice(idx, 1);
+            else data.selectedInterests.push(int);
+            const btn = document.getElementById('interest-btn');
+            const ok = data.selectedInterests.length >= 3;
+            btn.style.opacity = ok ? '1' : '0.4';
+            btn.style.pointerEvents = ok ? 'auto' : 'none';
+        };
+        grid.appendChild(el);
+    });
+}
+
+function finishSignup() {
+    const name = document.getElementById('signup-name').value || 'misafir';
+    data.user = { name, interests: data.selectedInterests };
+    document.getElementById('nav-user').textContent = name.toLowerCase();
+    go('home');
+}
+
+function mockLogin() {
+    data.user = { name: 'Damla', interests: ['felsefe', 'müzik', 'edebiyat', 'sinema'] };
+    document.getElementById('nav-user').textContent = 'damla';
+    go('home');
+}
+
+// ═══ HOME — VİTRİN ═══
+function renderHome() {
+    // Top 6 posts as card grid
+    document.getElementById('home-posts-preview').innerHTML = data.posts.slice(0, 6).map(p => `
+        <div class="grid-card" onclick="showPost(${p.id})">
+            <div class="card-icon">${p.icon}</div>
+            <span class="tag card-tag">${p.cat}</span>
+            <h3>${p.title}</h3>
+            <p>${p.body.split('\\n')[0].slice(0, 80)}...</p>
+            <div class="card-meta">✎ ${p.author} · 🌷 ${p.likes}</div>
+        </div>
+    `).join('');
+
+    // Top 3 playlists
+    document.getElementById('home-playlists-preview').innerHTML = data.playlists.slice(0, 3).map((p, i) => `
+        <div class="playlist-card" onclick="go('playlists')">
+            <div class="playlist-rank">${i + 1}</div>
+            <div style="font-size:22px;">${p.emoji}</div>
+            <div class="playlist-info">
+                <h4>${p.name}</h4>
+                <p>${p.desc}</p>
+            </div>
+            <div class="playlist-likes">🌷 ${p.likes}</div>
+        </div>
+    `).join('');
+
+    // All 4 clubs as compact cards
+    document.getElementById('home-clubs-preview').innerHTML = data.clubs.map(c => `
+        <div class="grid-card" onclick="showClub(${c.id})" style="text-align:center; align-items:center; padding:20px 16px;">
+            <div style="font-size:2rem;">${c.icon}</div>
+            <h3 style="font-size:1rem;">${c.name}</h3>
+            <span class="tag tag-green" style="margin-top:2px;">${c.members} üye</span>
+        </div>
+    `).join('');
+}
+
+// ═══ YAZILAR — LİSTE ═══
+function renderYazilar() {
+    document.getElementById('yazilar-list').innerHTML = data.posts.map(p => `
+        <div class="post-card-list" onclick="showPost(${p.id})" style="padding:28px 0; border-bottom:1px solid var(--border); cursor:pointer; transition: padding-left 0.2s;" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="tag">${p.cat}</span>
+            <h2 class="serif-italic" style="font-size:1.7rem; color:var(--text); margin:8px 0 6px; line-height:1.25;">${p.title}</h2>
+            <p style="font-size:14px; color:var(--text-soft); font-weight:300; line-height:1.7;">${p.body.split('\\n')[0].slice(0, 150)}...</p>
+            <div style="display:flex; gap:16px; font-size:12px; color:var(--text-faint); margin-top:10px;">
+                <span>✎ ${p.author}</span>
+                <span>🌷 ${p.likes}</span>
+                <span>💬 ${p.comms}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showPost(id) {
+    const p = data.posts.find(x => x.id === id);
+    const bodyHtml = p.body.split('\n').filter(x => x.trim()).map(para =>
+        `<p style="font-size:16px; line-height:2; color:var(--text-mid); font-weight:300; margin-bottom:18px;">${para}</p>`
+    ).join('');
+    document.getElementById('post-detail').innerHTML = `
+        <span class="tag" style="margin-bottom:8px; display:inline-block;">${p.cat}</span>
+        <h1 class="serif-italic" style="font-size:2.6rem; color:var(--text); margin:12px 0 8px; line-height:1.12;">${p.title}</h1>
+        <div style="font-size:13px; color:var(--text-faint); margin-bottom:36px;">
+            ✎ ${p.author} · 🌷 ${p.likes} çiçek · 💬 ${p.comms} yorum
+        </div>
+        <div style="font-family:var(--fd); font-size:64px; color:var(--rose-faint); line-height:1; margin-bottom:-12px;">"</div>
+        ${bodyHtml}
+        <hr class="divider">
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn" style="padding:10px 22px; font-size:13px;" onclick="this.textContent='🌷 beğenildi!'; this.style.background='var(--green)'">🌷 çiçek bırak</button>
+            <button class="btn-ghost" style="padding:10px 22px; font-size:13px;">💬 yorum yaz</button>
+            <button class="btn-ghost" style="padding:10px 22px; font-size:13px;" onclick="this.textContent='🔖 kaydedildi!'">🔖 kaydet</button>
+        </div>
+    `;
+    go('post');
+}
+
+// ═══ PLAYLISTS ═══
+function renderPlaylists() {
+    document.getElementById('playlist-list').innerHTML = data.playlists.map((p, i) => `
+        <div class="playlist-card">
+            <div class="playlist-rank">${i + 1}</div>
+            <div style="font-size:24px;">${p.emoji}</div>
+            <div class="playlist-info">
+                <h4>${p.name}</h4>
+                <p>${p.desc}</p>
+            </div>
+            <div class="playlist-likes">
+                <span style="cursor:pointer;" onclick="event.stopPropagation(); this.textContent='🌷 ' + (${p.likes}+1)">🌷 ${p.likes}</span>
+                <div style="font-size:10px; color:var(--text-faint);">by ${p.by}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ═══ CLUBS ═══
+function renderClubs() {
+    document.getElementById('club-grid').innerHTML = data.clubs.map(c => `
+        <div class="grid-card" onclick="showClub(${c.id})" style="text-align:center; align-items:center;">
+            <div style="font-size:2.4rem;">${c.icon}</div>
+            <h3 style="font-size:1.3rem;">${c.name}</h3>
+            <p>${c.desc}</p>
+            <span class="tag tag-green" style="margin-top:4px;">${c.members} üye</span>
+        </div>
+    `).join('');
+}
+
+function showClub(id) {
+    const c = data.clubs.find(x => x.id === id);
+    document.getElementById('club-detail').innerHTML = `
+        <div style="text-align:center; margin-bottom:36px;">
+            <div style="font-size:3.5rem; margin-bottom:6px;">${c.icon}</div>
+            <h1 class="serif-italic" style="font-size:2.4rem; color:var(--text);">${c.name}</h1>
+            <p style="font-size:14px; color:var(--text-soft); margin:8px 0 18px;">${c.desc}</p>
+            <button class="btn" id="join-btn-${c.id}" onclick="joinClub(${c.id}, this)">${c.members} üye · katıl</button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start;">
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:22px; max-height:400px; overflow-y:auto;">
+                <h3 class="serif-italic" style="font-size:1.2rem; color:var(--rose); margin-bottom:14px;">yaklaşan etkinlikler 📅</h3>
+                ${c.events.map((e, i) => `
+                    <div class="event-item" onclick="toggleEventDetail('evt-${c.id}-${i}')" style="padding:12px 0; ${i < c.events.length - 1 ? 'border-bottom:1px solid var(--border);' : ''} cursor:pointer; transition:all 0.2s;">
+                        <strong style="font-size:13px; color:var(--text);">${e.title}</strong><br>
+                        <span style="font-size:11px; color:var(--text-faint);">${e.date} · ${e.place}</span>
+                        <div id="evt-${c.id}-${i}" style="display:none; margin-top:10px; padding:12px; background:var(--surface-warm); border-radius:10px;">
+                            <p style="font-size:12px; color:var(--text-mid); line-height:1.6; margin-bottom:8px;">${e.desc}</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; color:var(--text-faint);">👥 ${e.attendees} katılımcı</span>
+                                <button class="btn btn-sm" onclick="event.stopPropagation(); this.textContent='✓ katılıyorum'; this.style.background='var(--green)'">katıl</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:22px;">
+                <h3 class="serif-italic" style="font-size:1.2rem; color:var(--rose); margin-bottom:14px;">anket 📊</h3>
+                <p style="font-size:13px; color:var(--text-mid); margin-bottom:10px;">${c.pollQ}</p>
+                <div id="poll-options-${c.id}">
+                    ${c.pollOpts.map((o, i) => `
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:8px; font-size:13px; color:var(--text-mid);">
+                            <input type="radio" name="poll-${c.id}" value="${i}" style="width:auto; accent-color:var(--rose);"> ${o}
+                        </label>
+                    `).join('')}
+                    <button class="btn btn-sm btn-full" style="margin-top:12px;" onclick="submitPoll(${c.id})">gönder</button>
+                </div>
+                <div id="poll-results-${c.id}" style="display:none;"></div>
+            </div>
+        </div>
+    `;
+    go('club-detail');
+}
+
+function toggleEventDetail(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function addContentComment(ideaId) {
+    const input = document.getElementById('ci-input-' + ideaId);
+    if (!input.value.trim()) return;
+    const ci = data.contentIdeas.find(x => x.id === ideaId);
+    ci.comments.push({ from: data.user?.name?.toLowerCase() || 'anonim', msg: input.value });
+    input.value = '';
+    renderCreatorIdeas();
+}
+
+function addCreatorIdea() {
+    const input = document.getElementById('new-creator-idea');
+    if (!input.value.trim()) return;
+    data.contentIdeas.unshift({
+        id: Date.now(), by: data.user?.name?.toLowerCase() || 'anonim',
+        idea: input.value, status: 'fikir', likes: 0, comments: []
+    });
+    input.value = '';
+    renderCreatorIdeas();
+}
+
+function renderCreators() {
+    document.getElementById('creator-count').textContent = data.creatorMembers + ' üretici';
+    renderCreatorIdeas();
+}
+
+function renderCreatorIdeas() {
+    const statusColors = { 'fikir': 'var(--amber)', 'tartışılıyor': 'var(--rose)', 'yazılıyor': 'var(--green)' };
+    document.getElementById('creator-ideas-list').innerHTML = data.contentIdeas.map(ci => {
+        const sc = statusColors[ci.status] || 'var(--text-faint)';
+        return `
+        <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:20px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                <div style="flex:1;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="font-size:12px; font-weight:500; color:var(--rose);">${ci.by}</span>
+                        <span style="font-size:10px; color:${sc}; background:${sc}15; border:1px solid ${sc}30; padding:1px 8px; border-radius:10px; text-transform:uppercase; letter-spacing:0.05em;">${ci.status}</span>
+                    </div>
+                    <p style="font-size:14px; color:var(--text); line-height:1.5;">${ci.idea}</p>
+                </div>
+                <button class="flower-btn" style="padding:6px 12px; font-size:12px; white-space:nowrap;" onclick="this.textContent='🌷 ' + (${ci.likes}+1); this.onclick=null;">🌷 ${ci.likes}</button>
+            </div>
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+                ${ci.comments.map(cm => `
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <span style="font-size:11px; font-weight:500; color:var(--rose); white-space:nowrap;">${cm.from}</span>
+                        <span style="font-size:12px; color:var(--text-mid);">${cm.msg}</span>
+                    </div>
+                `).join('')}
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <input type="text" placeholder="yorum yaz..." style="flex:1; font-size:12px; padding:8px 12px; border-radius:8px;" id="ci-input-${ci.id}">
+                    <button class="btn btn-sm" onclick="addContentComment(${ci.id})">gönder</button>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+function showCreatorTab(tab, btn) {
+    document.getElementById('creator-tab-ideas').style.display = tab === 'ideas' ? 'block' : 'none';
+    document.getElementById('creator-tab-events').style.display = tab === 'events' ? 'block' : 'none';
+    btn.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function joinClub(id, btn) {
+    const c = data.clubs.find(x => x.id === id);
+    c.members++;
+    btn.textContent = '✓ katıldın · ' + c.members + ' üye';
+    btn.style.background = 'var(--green)';
+    btn.onclick = null;
+    btn.style.cursor = 'default';
+}
+
+function submitPoll(clubId) {
+    const selected = document.querySelector('input[name="poll-' + clubId + '"]:checked');
+    if (!selected) return;
+    const c = data.clubs.find(x => x.id === clubId);
+    const labels = c.pollOpts;
+    const votes = [47, 23, 30];
+    const idx = parseInt(selected.value);
+    votes[idx] += 1;
+    const total = votes.reduce((a, b) => a + b, 0);
+
+    document.getElementById('poll-options-' + clubId).style.display = 'none';
+    document.getElementById('poll-results-' + clubId).style.display = 'block';
+    document.getElementById('poll-results-' + clubId).innerHTML = `
+        <p style="font-size:11px; color:var(--text-faint); margin-bottom:12px;">toplam ${total} oy</p>
+        ${labels.map((l, i) => {
+            const pct = Math.round(votes[i] / total * 100);
+            const isSelected = i === idx;
+            return `
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                        <span style="color:${isSelected ? 'var(--rose)' : 'var(--text-mid)'}; font-weight:${isSelected ? '500' : '300'};">${l} ${isSelected ? '←' : ''}</span>
+                        <span style="color:var(--text-faint);">${pct}%</span>
+                    </div>
+                    <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+                        <div style="height:100%; width:${pct}%; background:${isSelected ? 'var(--rose)' : 'var(--rose-light)'}; border-radius:3px; transition:width 0.5s ease;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('')}
+    `;
+}
+
+// ═══ MESSAGES ═══
+function renderMessages() {
+    document.getElementById('msg-list').innerHTML = data.conversations.map(c => `
+        <div class="msg-item" onclick="openChat(${c.id})">
+            <div class="msg-avatar">${c.emoji}</div>
+            <div class="msg-preview">
+                <h4>${c.name}</h4>
+                <p>${c.lastMsg}</p>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+                <span class="msg-time">${c.time}</span>
+                ${c.unread ? '<div class="msg-unread"></div>' : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function openChat(id) {
+    const c = data.conversations.find(x => x.id === id);
+    const msgs = data.chatMessages[id] || [];
+    document.getElementById('chat-header').innerHTML = `
+        <div class="msg-avatar" style="width:36px; height:36px; font-size:16px;">${c.emoji}</div>
+        <div>
+            <h3 style="font-size:16px; font-family:var(--fd); color:var(--text);">${c.name}</h3>
+            <span style="font-size:11px; color:var(--text-faint);">mutual</span>
+        </div>
+    `;
+    document.getElementById('chat-messages').innerHTML = msgs.map(m => `
+        <div class="chat-bubble ${m.from}">${m.msg}</div>
+    `).join('');
+    window._currentChat = id;
+    go('chat');
+    setTimeout(() => {
+        const el = document.getElementById('chat-messages');
+        el.scrollTop = el.scrollHeight;
+    }, 100);
+}
+
+function sendChat() {
+    const input = document.getElementById('chat-input');
+    if (!input.value.trim()) return;
+    const id = window._currentChat;
+    data.chatMessages[id].push({ from:'me', msg: input.value });
+    const container = document.getElementById('chat-messages');
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble me';
+    bubble.textContent = input.value;
+    container.appendChild(bubble);
+    input.value = '';
+    container.scrollTop = container.scrollHeight;
+}
+
+// ═══ PROFILE + THREAD GUESTBOOK ═══
+function renderProfile() {
+    if (!data.user) { mockLogin(); return; }
+    document.getElementById('prof-name').textContent = data.user.name;
+    document.getElementById('prof-tags').innerHTML = data.user.interests.map(t => `<span class="tag">${t}</span>`).join('');
+    renderGuestbook();
+}
+
+function renderGuestbook() {
+    document.getElementById('guestbook').innerHTML = data.threads.map(t => `
+        <div class="thread">
+            <div class="thread-main">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="thread-author">${t.from}</span>
+                    <span class="thread-time">${t.time}</span>
+                </div>
+                <div class="thread-msg">${t.msg}</div>
+                <div style="margin-top:6px;">
+                    <button class="thread-reply-btn" onclick="toggleReplyInput(${t.id})">↩ yanıtla</button>
+                </div>
+            </div>
+            ${t.replies.length ? `
+                <div class="thread-replies">
+                    ${t.replies.map(r => `
+                        <div class="reply-bubble">
+                            <span class="thread-author">${r.from}</span>
+                            <span class="thread-time" style="margin-left:8px;">${r.time}</span>
+                            <div class="thread-msg">${r.msg}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            <div id="reply-input-${t.id}" style="display:none; margin-left:28px; padding-left:16px; border-left:2px solid var(--rose-faint); margin-top:8px;">
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="reply-text-${t.id}" placeholder="yanıtla..." style="flex:1; font-size:13px; padding:10px 14px;">
+                    <button class="btn btn-sm" onclick="addReply(${t.id})">gönder</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleReplyInput(id) {
+    const el = document.getElementById('reply-input-' + id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function addReply(threadId) {
+    const input = document.getElementById('reply-text-' + threadId);
+    if (!input.value.trim()) return;
+    const thread = data.threads.find(t => t.id === threadId);
+    thread.replies.push({ from: data.user?.name || 'anonim', msg: input.value, time: 'az önce' });
+    renderGuestbook();
+}
+
+function addNote() {
+    const input = document.getElementById('gb-input');
+    if (!input.value.trim()) return;
+    data.threads.unshift({
+        id: Date.now(), from: data.user?.name || 'anonim', msg: input.value, time: 'az önce', replies: []
+    });
+    input.value = '';
+    renderGuestbook();
+}
+
+// ═══ OVERLAY ═══
+function showOverlay(title, desc) {
+    document.getElementById('overlay-title').textContent = title;
+    document.getElementById('overlay-desc').textContent = desc;
+    document.getElementById('overlay').classList.add('active');
+}
+function closeOverlay() {
+    document.getElementById('overlay').classList.remove('active');
+    if (data.user) go('home');
+}
+</script>
+</body>
+</html>
