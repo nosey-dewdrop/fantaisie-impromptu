@@ -6,7 +6,7 @@ public class MazeApp {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
-        System.out.println("=== Maze Generator ===");
+        System.out.println("𝜗ৎ Maze Generator 𝜗ৎ ");
 
         while (running) {
             printMenu();
@@ -20,7 +20,7 @@ public class MazeApp {
                     runMazeGeneration(scanner, "division");
                     break;
                 case 3:
-                    System.out.println("Goodbye!");
+                    System.out.println("𝜗ৎ Goodbye! 𝜗ৎ");
                     running = false;
                     break;
                 default:
@@ -74,9 +74,11 @@ public class MazeApp {
             int val = readInt(scanner, prompt);
             if (val <= 0) {
                 System.out.println("Error: Size must be positive.");
-            } else if (val % 2 == 0) {
+            } 
+            else if (val % 2 == 0) {
                 System.out.println("Error: Size must be odd.");
-            } else {
+            } 
+            else {
                 return val;
             }
         }
